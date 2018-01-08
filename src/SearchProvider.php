@@ -14,8 +14,8 @@ class ServiceProvider extends BaseServiceProvider
      */
     public function boot()
     {
-        $this->loadViewsFrom(__DIR__.'/Views/', 'hnhdigital-search-components');
+        $this->loadViewsFrom(__DIR__.'/../resources/views/', 'hnhdigital-search-component');
         
-        view()->composer('hnhdigital-search-components::search', 'HnhDigital\SearchComponents\Composers\Search');
+        view()->composer('hnhdigital-search-component::search', Composers\Search::class);
     }
 }

@@ -1,17 +1,32 @@
 
-<div id="{{ $form_id }}-results" class="panel-body tab-pane active">
-   <div class="table-responsive">
-      <table class="table {{ $table_class }}">
-      </table>
-   </div>
+<div class="hnhdigital-search">
+  <div id="hnhdigital-{{ $search->name }}-results" class="panel-body tab-pane active">
+     <div class="table-responsive">
+        <table class="table{{ $table_class or '' }}">
+          {!! $search->colgroup !!}
+          <thead class="search-header">
+            {!! $search->search_header !!}
+          </thead>
+          {!! $search->search_input !!}
+          <tbody class="search-result-rows">
+            {!! $search->result !!}
+          </tbody>
+          <thead class="search-footer">
+            {!! $search->search_footer !!}
+          </thead>
+        </table>
+     </div>
+  </div>
 </div>
 
 @section('footer')
 @parent
-<form id="{{ $form_id }}-form" class="hnhdigital-search-form" novalidate="novalidate" action="" method="post" onsubmit="return false;">
+<form id="{{ $search->form_id }}" class="hnhdigital-search-form" novalidate="novalidate" action="{{ $search->fallback_route }}"  data-action="{{ $search->route }}" method="post" onsubmit="return false;">
+  <input type="hidden" name="page" value="{{ $search->getPaginator('page') }}">
   <button type="submit" class="hidden-search-button"></button>
 </form>
+
 <script>
-  $('#{{ $form_id }}-form').data('validator', {'settings': {}})
+  $('#{{ $search->form_id }}').data('validator', {'settings': {}})
 </script>
 @stop

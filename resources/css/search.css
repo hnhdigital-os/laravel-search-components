@@ -1,0 +1,39 @@
+
+.hnhdigital-search .search-buttons a,
+.hnhdigital-search .search-items-per-page-pulldown a {
+    font-weight: 600;
+    text-decoration: none !important;
+}
+
+.hnhdigital-search .search-buttons a:not(.btn-outline-primary),
+.hnhdigital-search .search-items-per-page-pulldown a,
+.hnhdigital-search .search-items-per-page-pulldown a:hover {
+    color: rgb(167, 177, 194);
+    background: none;
+}
+
+.hnhdigital-search .table th,
+.hnhdigital-search .table td {
+    border:none;
+}
+
+.panel-body .hnhdigital-search .panel-body {
+    border: none;
+    padding: 0;
+}
+
+.hnhdigital-search .table tbody + tbody {
+    border: none;
+}
+
+.hnhdigital-search .table {
+    margin-bottom: 0;
+}
+
+.hnhdigital-search tbody.search-input td {
+    padding: 0;
+}
+
+.hnhdigital-search tr.search-info td {
+    padding: 0;
+}

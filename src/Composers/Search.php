@@ -24,10 +24,9 @@ class Search
      */
     public function compose(View $view)
     {
-        $view_data = $view->getData();
+        $data = $view->getData();
 
-        $view->with('form_id', array_get($view_data, 'form_id', ''))
-            ->with('table_class', array_get($view_data, 'table_class'));
+        $view->with('search', $data['data']);
     }
 
 }
