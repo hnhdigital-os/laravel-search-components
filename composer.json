@@ -1,0 +1,45 @@
+{
+    "name": "hnhdigital-os/laravel-search-components",
+    "description": "Search view components.",
+    "keywords": ["laravel"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Rocco Howard",
+            "email": "rocco@hnh.digital"
+        }
+    ],
+    "require": {
+        "php": ">=7.0.0",
+        "laravel/framework": ">=5.5"
+    },
+    "require-dev": {
+
+    },
+    "autoload": {
+        "psr-4": {
+            "HnhDigital\\SearchComponents\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "HnhDigital\\SearchComponents\\ServiceProvider"
+            ]
+        }
+    },
+    "scripts": {
+        "test": [
+            "composer phpunit && composer phpcs && composer phpmd"
+        ],
+        "phpunit": [
+            "phpunit"
+        ],
+        "phpcs": [
+            "phpcs -p -s --standard=PSR2 ./src ./tests"
+        ],
+        "phpmd": [
+            "phpmd ./src phpmd.xml"
+        ]
+    }
+}
