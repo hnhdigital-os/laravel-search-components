@@ -29,6 +29,69 @@ class Search
     }
 
     /**
+     * Check total columns.
+     *
+     * @return integer
+     */
+    private function checkColumns()
+    {
+        $total_columns = array_get($this->config, 'columns.total', 1);
+
+        return $total_columns;
+    }
+
+    /**
+     * Parse the request.
+     *
+     * @return array
+     */
+    private function parseRequest()
+    {
+        $result = [];
+
+        // Check the ModelSearch trait method.
+        if (method_exists($this->config['model'], 'getSearchableAttributes')) {
+            $attributes = $this->config['model']->getSearchableAttributes();
+
+            foreach ($this->request as $key => $value) {
+                if (!array_has($attributes, $key) || empty($value)) {
+                    continue;
+                }
+
+                list($operator_name, $operator, $value) = ModelSearch::parseInlineOperator($value);
+
+                $title = array_get($attributes, $key.'.title', $key);
+
+                $result[] = sprintf('<strong>%s</strong> %s <strong>%s</strong>', $title, $operator_name, $value);
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Get the columns.
+     *
+     * @return string
+     */
+    private function getColumns()
+    {
+        $total_columns = $this->checkColumns();
+        $columns = array_get($this->config, 'columns', []);
+
+        $html = '';
+        for ($column = 0; $column < $total_columns; $column++) {
+            $html .= Html::col()->width(array_get($columns, $column.'.width', ''));
+        }
+
+        if ($total_columns > 0) {
+            $html = Html::colgroup($html);
+        }
+
+        return $html;
+    }
+
+    /**
      * Get the table header.
      *
      * @return mixed
@@ -49,72 +112,46 @@ class Search
     }
 
     /**
-     * Get the colgroup.
+     * Get default pagination data.
      *
-     * @return string
+     * @return array
      */
-    private function getColgroup()
+    private function getPaginationPerPage()
     {
-        $total_columns = $this->checkColumns();
-        $colgroup = array_get($this->config, 'colgroup', []);
+        $pagination_per_page = array_get($this->config, 'pagination_per_page', 15);
+        $page = array_get($this->config, 'page', 1);
+        $page = request('page', $page);
+        $this->config['page'] = $page;
 
-        $html = '';
-        for ($column = 0; $column < $total_columns; $column++) {
-            $html .= Html::col()->width(array_get($colgroup, $column.'.width', ''));
-        }
+        Paginator::currentPageResolver(function () use ($page) {
+            return $page;
+        });
 
-        if ($total_columns > 0) {
-            $html = Html::colgroup($html);
-        }
-
-        return $html;
+        return $pagination_per_page;
     }
 
     /**
-     * Check total columns.
+     * Get pagination data.
      *
-     * @return integer
+     * @return array
      */
-    private function checkColumns()
+    private function getPagination($item = null)
     {
-        $total_columns = array_get($this->config, 'colgroup.columns', 1);
-
-        return $total_columns;
+        return $this->pagination_per_page;
     }
 
     /**
-     * Get search input.
+     * Get pagination data.
      *
-     * @return string
+     * @return array
      */
-    private function getSearchInput()
+    private function getPaginator($item = null)
     {
-        $total_columns = $this->checkColumns();
-        $search_input = array_get($this->config, 'search_input', []);
-        $tbody = Tag::tbody();
-
-        // No search input.
-        if (empty($search_input)) {
-            return $tbody;
+        if (!is_null($item)) {
+            return array_get($this->config, 'paginator.'.$item, '');
         }
 
-        $tbody = Tag::tbody();
-        $tr = $tbody->tr(['class' => 'search-input']);
-        $td_html = '';
-
-        // Default.
-        if ($search_input === true) {
-            $td_html = Html::input()->name('lookup')->addClass('search-field form-control')->form($this->form_id)->s();
-        } else {
-
-        }
-
-        $tr->td(
-            ['colspan' => $total_columns],
-            $td_html
-        );
-
-        return $tbody;
+        return array_get($this->config, 'paginator', []);
     }
 
     /**
@@ -178,32 +215,59 @@ class Search
     }
 
     /**
-     * Parse the request.
+     * Get search input.
      *
-     * @return array
+     * @return string
      */
-    private function parseRequest()
+    private function getSearchInput()
     {
-        $result = [];
+        $total_columns = $this->checkColumns();
+        $search_input = array_get($this->config, 'search_input', []);
+        $tbody = Tag::tbody();
 
-        // Check the ModelSearch trait method.
-        if (method_exists($this->config['model'], 'getSearchableAttributes')) {
-            $attributes = $this->config['model']->getSearchableAttributes();
-
-            foreach ($this->request as $key => $value) {
-                if (!array_has($attributes, $key)) {
-                    continue;
-                }
-
-                list($operator_name, $operator, $value) = ModelSearch::parseInlineOperator($value);
-
-                $title = array_get($attributes, $key.'.title', $key);
-
-                $result[] = sprintf('<strong>%s</strong> %s <strong>%s</strong>', $title, $operator_name, $value);
-            }
+        // No search input.
+        if (empty($search_input)) {
+            return $tbody;
         }
 
-        return $result;
+        $tbody = Tag::tbody();
+        $tr = $tbody->tr(['class' => 'search-input']);
+        $td_html = '';
+
+        // Default.
+        if ($search_input === true) {
+            $td_html = Html::input()->name('lookup')->value(array_get($this->config, 'request.lookup', ''))->addClass('search-field form-control')->form($this->form_id)->s();
+        } else {
+
+        }
+
+        $tr->td(
+            ['colspan' => $total_columns],
+            $td_html
+        );
+
+        return $tbody;
+    }
+
+    /**
+     * Get the result.
+     *
+     * @return mixed
+     */
+    private function getResult()
+    {
+        if (array_get($this->config, 'paginator.total', 0) === 0) {
+            return $this->search_empty;
+        }
+
+        $info = $this->search_info->prepare(['ignore_tags' => 'tbody']);
+        $results = $this->config['result']->prepare(['ignore_tags' => 'tbody']);
+
+        if (request::ajax()) {
+            return array_merge($info, $results);
+        }
+
+        return $info.$results;
     }
 
     /**
@@ -249,67 +313,42 @@ class Search
     }
 
     /**
-     * Get the result.
+     * Get session.
      *
-     * @return mixed
+     * @return string
      */
-    private function getResult()
+    private function getSession()
     {
-        if (array_get($this->config, 'paginator.total', 0) === 0) {
-            return $this->search_empty;
-        }
-
-        $info = $this->search_info->prepare(['ignore_tags' => 'tbody']);
-        $results = $this->config['result']->prepare(['ignore_tags' => 'tbody']);
-
-        if (request::ajax()) {
-            return array_merge($info, $results);
-        }
-
-        return $info.$results;
+        return session($this->session_name, []);
     }
 
     /**
-     * Get default pagination data.
+     * Get the unique session name.
      *
-     * @return array
+     * @return string
      */
-    private function getPaginationPerPage()
+    private function getSessionName()
     {
-        $pagination_per_page = array_get($this->config, 'pagination_per_page', 15);
-        $page = array_get($this->config, 'page', 1);
-        $page = request('page', $page);
-        $this->config['page'] = $page;
+        // Use the unique route as the session name.
+        if (array_has($this->config, 'route_text')) {
+            $name = str_replace(['[', ']', '::', ' '], ['', '-', '-', ''], array_get($this->config, 'route_text', ''));
+            $name .= '-'.hash('sha256', serialize(array_get($this->config, 'route_parameters', '')));
 
-        Paginator::currentPageResolver(function () use ($page) {
-            return $page;
-        });
-
-        return $pagination_per_page;
-    }
-
-    /**
-     * Get pagination data.
-     *
-     * @return array
-     */
-    private function getPaginator($item = null)
-    {
-        if (!is_null($item)) {
-            return array_get($this->config, 'paginator.'.$item, '');
+            return $name;
         }
 
-        return array_get($this->config, 'paginator', []);
-    }
+        $name = $this->name;
 
-    /**
-     * Get pagination data.
-     *
-     * @return array
-     */
-    private function getPagination($item = null)
-    {
-        return $this->pagination_per_page;
+        // Use the provided class and search name.
+        if (array_has($this->config, 'class')) {
+            if (array_get($this->config, 'class', false)) {
+                $name .= '_'.snake_case(str_replace('\\', '', $this->config['class']));
+            }
+
+            return $name;
+        }
+        
+        return $name;
     }
 
     /**
@@ -331,7 +370,26 @@ class Search
      */
     private function setRequest($name)
     {
-        $this->config['request'] = is_array($name) ? $name : request($name, []);
+        // Get the data from the request or provided array.
+        $request = is_array($name) ? $name : request($name, []);
+
+        // Get the session.
+        if (empty($request)) {
+            $request = $this->session;
+        }
+
+        // Set the session, and the request data.
+        $this->session = $this->config['request'] = $request;
+    }
+
+    /**
+     * Set session.
+     *
+     * @return void
+     */
+    private function setSession($data)
+    {
+        session([$this->session_name => $data]);
     }
 
     /**
@@ -375,6 +433,8 @@ class Search
      */
     private function setRoute(...$arguments)
     {
+        $this->config['route_text'] = array_get($arguments, 0, '');
+        $this->config['route_parameters'] = array_get($arguments, 1, []);
         $this->config['route'] = route(...$arguments);
     }
 
