@@ -3,7 +3,7 @@
   <div id="hnhdigital-{{ $search->name }}-results" class="panel-body tab-pane active">
      <div class="table-responsive">
         <table class="table{{ $table_class or '' }}">
-          {!! $search->colgroup !!}
+          {!! $search->columns !!}
           <thead class="search-header">
             {!! $search->search_header !!}
           </thead>
