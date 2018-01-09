@@ -256,18 +256,17 @@ class Search
      */
     private function getResult()
     {
+        $info = $this->search_info->prepare(['ignore_tags' => 'tbody']);
+
         if (array_get($this->config, 'paginator.total', 0) === 0) {
-            return $this->search_empty;
+            $empty = $this->search_empty->prepare(['ignore_tags' => 'tbody']);
+
+            return request::ajax() ? array_merge($info, $empty) : $info.$empty;
         }
 
-        $info = $this->search_info->prepare(['ignore_tags' => 'tbody']);
         $results = $this->config['result']->prepare(['ignore_tags' => 'tbody']);
 
-        if (request::ajax()) {
-            return array_merge($info, $results);
-        }
-
-        return $info.$results;
+        return request::ajax() ? array_merge($info, $results) : $info.$results;
     }
 
     /**
