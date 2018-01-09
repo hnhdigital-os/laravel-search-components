@@ -47,24 +47,34 @@ class Search
      */
     private function parseRequest()
     {
-        $result = [];
+        $result = [
+            'count'      => 0,
+            'attributes' => [],
+            'text'       => [],
+        ];
+
+        $count = 0;
 
         // Check the ModelSearch trait method.
         if (method_exists($this->config['model'], 'getSearchableAttributes')) {
-            $attributes = $this->config['model']->getSearchableAttributes();
+            $result['attributes'] = $this->config['model']->getSearchableAttributes();
 
             foreach ($this->request as $key => $value) {
-                if (!array_has($attributes, $key) || empty($value)) {
+                if (!array_has($result['attributes'], $key) || empty($value)) {
                     continue;
                 }
 
                 list($operator_name, $operator, $value) = ModelSearch::parseInlineOperator($value);
+                $title = array_get($result['attributes'], $key.'.title', $key);
+                $result['text'][] = sprintf('<strong>%s</strong> %s <strong>%s</strong>', $title, $operator_name, $value);
 
-                $title = array_get($attributes, $key.'.title', $key);
-
-                $result[] = sprintf('<strong>%s</strong> %s <strong>%s</strong>', $title, $operator_name, $value);
+                $count++;
             }
         }
+
+        $result['count'] = $count;
+
+        array_set($this->config, 'parsed_request', $result);
 
         return $result;
     }
@@ -197,13 +207,13 @@ class Search
             return $tbody;
         }
 
-        $request = $this->parseRequest();
+        $this->parseRequest();
 
-        if (count($request) == 0) {
+        if (array_get($this->config, 'parsed_request.count', 0) == 0) {
             return $tbody;
         }
 
-        $td_html = 'Filtering by: '.implode('; ', $request).'. ';
+        $td_html = 'Filtering by: '.implode('; ', array_get($this->config, 'parsed_request.text', [])).'. ';
 
         $tr = $tbody->tr(['class' => 'search-info']);
         $tr->td(
