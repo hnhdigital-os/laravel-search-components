@@ -11,7 +11,10 @@
     ],
     "require": {
         "php": ">=7.0.0",
-        "laravel/framework": ">=5.5"
+        "laravel/framework": ">=5.5",
+        "hnhdigital-os/laravel-html-generator": "~1.0",
+        "hnhdigital-os/laravel-html-builder": "~1.0",
+        "hnhdigital-os/laravel-model-search": "~1.0"
     },
     "require-dev": {
 
