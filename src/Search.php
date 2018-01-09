@@ -299,10 +299,9 @@ class Search
 
         $total_columns = $this->checkColumns();
         $tr = $tbody->tr();
+        $row_html = '';
 
-        if ($search_empty === true) {
-            $row_html = 'No <strong>records</strong> found.';
-        }
+        $row_html = 'No <strong>'.array_get($search_empty, 'name').'</strong> found.';
 
         $tr->td(
             ['colspan' => $total_columns, 'style' => 'line-height: 50px;text-align:center;'],
@@ -310,6 +309,34 @@ class Search
         );
 
         return $tbody;
+    }
+
+    /**
+     * Set the search empty.
+     *
+     * @return string
+     */
+    private function setSearchEmpty($config = false)
+    {
+        // Turn off the the search empty option.
+        if ($config === false) {
+            array_set($this->config, 'search_empty', false);
+
+            return;
+        }
+
+        if ($config === true) {
+            $config = [];
+        }
+
+        // Default config.
+        $default_config = [
+            'name' => 'records',
+        ];
+
+        $config = array_replace_recursive($default_config, $config);
+
+        array_set($this->config, 'search_empty', $config);
     }
 
     /**
@@ -470,7 +497,7 @@ class Search
         $paginator['previous_page_url'] = $results->previousPageUrl();
         $paginator['total'] = $results->total();
 
-        $this->config['paginator'] = $paginator;
+        array_set($this->config, 'paginator', $paginator);
     }
 
     /**
@@ -483,8 +510,17 @@ class Search
         $this->query = clone $query;
 
         // Run query.
+        if (array_has($this->config, 'query_all', false)) {
+            $results = $query->get();
+            array_set($this->config, 'paginator.count', $results->count());
+            array_set($this->config, 'paginator.total', $results->count());
+
+            return $results;
+        }
+
         $results = $query->paginate($this->pagination);
         $this->paginator = $results;
+
         return $results;
     }
 
