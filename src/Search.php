@@ -2,15 +2,14 @@
 
 namespace HnhDigital\SearchComponents;
 
+use HnhDigital\ModelSearch\ModelSearch;
 use Html;
 use Illuminate\Pagination\Paginator;
-use HnhDigital\ModelSearch\ModelSearch;
 use Request;
 use Tag;
 
 class Search
 {
-
     /**
      * Config.
      *
@@ -31,7 +30,7 @@ class Search
     /**
      * Check total columns.
      *
-     * @return integer
+     * @return int
      */
     private function checkColumns()
     {
@@ -248,7 +247,6 @@ class Search
         if ($search_input === true) {
             $td_html = Html::input()->name('lookup')->value(array_get($this->config, 'request.lookup', ''))->addClass('search-field form-control')->form($this->form_id)->s();
         } else {
-
         }
 
         $tr->td(
@@ -383,7 +381,7 @@ class Search
 
             return $name;
         }
-        
+
         return $name;
     }
 
@@ -448,7 +446,7 @@ class Search
     {
         if (class_exists($class)) {
             $this->config['class'] = $class;
-            $this->config['model'] = new $class;
+            $this->config['model'] = new $class();
         }
     }
 
@@ -537,7 +535,7 @@ class Search
      * Get a static value.
      *
      * @param string $method
-     * @param array $arguments
+     * @param array  $arguments
      *
      * @return mixed
      */
@@ -550,7 +548,7 @@ class Search
      * Get a static value.
      *
      * @param string $method
-     * @param array $arguments
+     * @param array  $arguments
      *
      * @return mixed
      */
@@ -563,7 +561,7 @@ class Search
      * Call a method.
      *
      * @param string $method
-     * @param array $arguments
+     * @param array  $arguments
      *
      * @return mixed
      */

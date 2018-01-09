@@ -28,5 +28,4 @@ class Search
 
         $view->with('search', $data['data']);
     }
-
 }

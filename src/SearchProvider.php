@@ -5,7 +5,7 @@ namespace HnhDigital\SearchComponents;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 use View;
 
-class ServiceProvider extends BaseServiceProvider
+class SearchProvider extends BaseServiceProvider
 {
     /**
      * Register the service provider.
@@ -15,7 +15,7 @@ class ServiceProvider extends BaseServiceProvider
     public function boot()
     {
         $this->loadViewsFrom(__DIR__.'/../resources/views/', 'hnhdigital-search-component');
-        
+
         view()->composer('hnhdigital-search-component::search', Composers\Search::class);
     }
 }
