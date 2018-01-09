@@ -19,10 +19,11 @@ $.searchComponentsSearch = {
       $.ajax(form.data('action') + '?page=' + page, {
         data: $.searchComponentsSearch.serialize(results),
         beforeSend: function() {
-
+          form.trigger('hnhdigital-search::before-send');
         },
         success: function(response) {
           $.searchComponentsSearch.updateResults(results, response);
+          form.trigger('hnhdigital-search::success', [response]);
         }
       });
       return false;
