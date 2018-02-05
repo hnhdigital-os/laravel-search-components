@@ -16,7 +16,16 @@ $.searchComponentsSearch = {
       var results = $('#'+$(this).attr('id').replace('-form', '-results'));
       var page = $(form).find('[name=page]').val();
 
-      $.ajax(form.data('action') + '?page=' + page, {
+      var action_url = form.data('action');
+
+      if (action_url.indexOf('?') == -1) {
+        action_url += '?';
+      } else {
+        action_url += '&';
+      }
+      action_url += 'page=' + page;
+
+      $.ajax(action_url, {
         data: $.searchComponentsSearch.serialize(results),
         beforeSend: function() {
           form.trigger('hnhdigital-search::before-send');
