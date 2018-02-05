@@ -232,6 +232,7 @@ class Search
     {
         $total_columns = $this->checkColumns();
         $search_input = array_get($this->config, 'search_input', []);
+
         $tbody = Tag::tbody();
 
         // No search input.
@@ -243,11 +244,8 @@ class Search
         $tr = $tbody->tr(['class' => 'search-input']);
         $td_html = '';
 
-        // Default.
-        if ($search_input === true) {
-            $td_html = Html::input()->name('lookup')->value(array_get($this->config, 'request.lookup', ''))->addClass('search-field form-control')->form($this->form_id)->s();
-        } else {
-        }
+        // Default.{
+        $td_html = Html::input()->name('lookup')->placeholder(array_get($search_input, 'placeholder', ''))->value(array_get($this->config, 'request.lookup', ''))->addClass('search-field form-control')->form($this->form_id)->s();
 
         $tr->td(
             ['colspan' => $total_columns],
@@ -319,41 +317,37 @@ class Search
     }
 
     /**
-     * Set the search empty.
-     *
-     * @return string
-     */
-    private function setSearchEmpty($config = false)
-    {
-        // Turn off the the search empty option.
-        if ($config === false) {
-            array_set($this->config, 'search_empty', false);
-
-            return;
-        }
-
-        if ($config === true) {
-            $config = [];
-        }
-
-        // Default config.
-        $default_config = [
-            'name' => 'records',
-        ];
-
-        $config = array_replace_recursive($default_config, $config);
-
-        array_set($this->config, 'search_empty', $config);
-    }
-
-    /**
      * Get session.
      *
-     * @return string
+     * @return array
      */
     private function getSession()
     {
         return session($this->session_name, []);
+    }
+
+    /**
+     * Get a secific entry in the config.
+     *
+     * @param string $key
+     * @param mixed $value
+     */
+    public function getConfig($key, $default = null)
+    {
+        return array_get($this->config, $key, $default);
+    }
+
+    /**
+     * Set a secific entry in the config.
+     *
+     * @param string $key
+     * @param mixed $value
+     */
+    public function setConfig($key, $value)
+    {
+        array_set($this->config, $key, $value);
+
+        return $this;
     }
 
     /**
@@ -383,6 +377,66 @@ class Search
         }
 
         return $name;
+    }
+
+    /**
+     * Set the search empty.
+     *
+     * @param bool|array $config
+     *
+     * @return void
+     */
+    private function setSearchEmpty($config = false)
+    {
+        // Turn off the the search empty option.
+        if ($config === false) {
+            array_set($this->config, 'search_empty', false);
+
+            return;
+        }
+
+        if ($config === true) {
+            $config = [];
+        }
+
+        // Default config.
+        $default_config = [
+            'name' => 'records',
+        ];
+
+        $config = array_replace_recursive($default_config, $config);
+
+        array_set($this->config, 'search_empty', $config);
+    }
+
+    /**
+     * Set the search input.
+     *
+     * @param bool|array $config
+     *
+     * @return void
+     */
+    private function setSearchInput($config = false)
+    {
+        // Turn off the the search empty option.
+        if ($config === false) {
+            array_set($this->config, 'search_input', false);
+
+            return;
+        }
+
+        if ($config === true) {
+            $config = [];
+        }
+
+        // Default config.
+        $default_config = [
+            'placeholder' => 'Type your search criteria... + enter',
+        ];
+
+        $config = array_replace_recursive($default_config, $config);
+
+        array_set($this->config, 'search_input', $config);
     }
 
     /**
@@ -517,7 +571,7 @@ class Search
         $this->query = clone $query;
 
         // Run query.
-        if (array_has($this->config, 'query_all', false)) {
+        if (array_has($this->config, 'query_all', false) || array_has($this->config, 'all', false)) {
             $results = $query->get();
             array_set($this->config, 'paginator.count', $results->count());
             array_set($this->config, 'paginator.total', $results->count());
@@ -607,17 +661,20 @@ class Search
      *
      * @return mixed
      */
-    public function render($html)
+    public function render($html, $response = [])
     {
         $this->result = $html;
+        $this->result_response = $response;
 
         if (request::ajax()) {
-            return [
+            $result = [
                 'header' => $this->search_header,
                 'rows'   => $this->result,
                 'footer' => $this->search_footer,
                 'total'  => array_get($this->config, 'paginator.total'),
             ];
+
+            return $result + $response;
         }
 
         return $this;
