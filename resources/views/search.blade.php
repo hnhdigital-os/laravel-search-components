@@ -1,6 +1,8 @@
-
 <div class="hnhdigital-search">
-  <div id="hnhdigital-{{ $search->name }}-results" class="panel-body tab-pane active">
+  <div id="hnhdigital-{{ $search->name }}-results" class="hnhdigital-search-results panel-body tab-pane active" {{ $search->result_attributes or '' }}>
+
+     {{ $slot or '' }}
+
      <div class="table-responsive">
         <table class="table{{ $table_class or '' }}">
           {!! $search->columns !!}
@@ -8,6 +10,9 @@
             {!! $search->search_header !!}
           </thead>
           {!! $search->search_input !!}
+          <tbody class="search-notices">
+            {!! $search->notices !!}
+          </tbody>
           <tbody class="search-result-rows">
             {!! $search->result !!}
           </tbody>

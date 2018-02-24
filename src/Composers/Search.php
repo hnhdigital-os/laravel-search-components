@@ -2,6 +2,7 @@
 
 namespace HnhDigital\SearchComponents\Composers;
 
+use HnhDigital\SearchComponents\Search as SearchClass;
 use Illuminate\Contracts\View\View;
 
 class Search
@@ -25,6 +26,10 @@ class Search
     public function compose(View $view)
     {
         $data = $view->getData();
+
+        if (empty($data['data'])) {
+            $data['data'] = new SearchClass();
+        }
 
         $view->with('search', $data['data']);
     }

@@ -191,6 +191,22 @@ class Search
     }
 
     /**
+     * Get notices.
+     *
+     * @return string
+     */
+    private function getNotices()
+    {
+        if (empty($this->getConfig('notices'))) {
+            return '';
+        }
+
+        $notices = $this->config['notices']->prepare(['ignore_tags' => 'tbody']);
+
+        return request::ajax() ? $notices : $notices;
+    }
+
+    /**
      * Get search info.
      *
      * @return string
@@ -240,6 +256,11 @@ class Search
             return $tbody;
         }
 
+        // No search result needed if our total records is less then our per page.
+        if ($this->getConfig('paginator.total') <= $this->getConfig('paginator.per_page')) {
+            return $tbody;
+        }
+
         $tbody = Tag::tbody();
         $tr = $tbody->tr(['class' => 'search-input']);
         $td_html = '';
@@ -264,7 +285,12 @@ class Search
     {
         $info = $this->search_info->prepare(['ignore_tags' => 'tbody']);
 
-        if (array_get($this->config, 'paginator.total', 0) === 0) {
+        $no_empty_check = false;
+        if ($this->getConfig('append') || $this->getConfig('prepend')) {
+            $no_empty_check = true;
+        }
+
+        if (!$no_empty_check && array_get($this->config, 'paginator.total', 0) === 0) {
             $empty = $this->search_empty->prepare(['ignore_tags' => 'tbody']);
 
             return request::ajax() ? array_merge($info, $empty) : $info.$empty;
@@ -667,11 +693,20 @@ class Search
         $this->result_response = $response;
 
         if (request::ajax()) {
+
+            $rows_name = 'rows';
+            if ($this->getConfig('append')) {
+                $rows_name = 'append';
+            } elseif ($this->getConfig('prepend')) {
+                $rows_name = 'prepend';
+            }
+
             $result = [
-                'header' => $this->search_header,
-                'rows'   => $this->result,
-                'footer' => $this->search_footer,
-                'total'  => array_get($this->config, 'paginator.total'),
+                'header'   => $this->search_header,
+                'notices'  => $this->notices,
+                $rows_name => $this->result,
+                'footer'   => $this->search_footer,
+                'total'    => array_get($this->config, 'paginator.total'),
             ];
 
             return $result + $response;
