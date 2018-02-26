@@ -63,11 +63,26 @@ class Search
                     continue;
                 }
 
-                list($operator_name, $operator, $value) = ModelSearch::parseInlineOperator($value);
-                $title = array_get($result['attributes'], $key.'.title', $key);
-                $result['text'][] = sprintf('<strong>%s</strong> %s <strong>%s</strong>', $title, $operator_name, $value);
+                // Convert string to filter array.
+                if (!is_array($filters = $value)) {
+                    $filters = [['', $value]];
+                }
 
-                $count++;
+                foreach ($filters as $filter) {
+                    list($operator_name, $operator, $value) = ModelSearch::parseInlineOperator($filter);
+
+                    if (array_has($result['attributes'], $key.'.source_model', false)) {
+                        $model = array_get($result['attributes'], $key.'.source_model', false);
+                        $model_name = array_get($result['attributes'], $key.'.source_model_name', 'display_name');
+
+                        $value = $this->parseModelName($model, $model_name, $value);
+                    }
+
+                    $title = array_get($result['attributes'], $key.'.title', $key);
+                    $result['text'][] = sprintf('<strong>%s</strong> %s <strong>%s</strong>', $title, $operator_name, $value);
+
+                    $count++;
+                }
             }
         }
 
@@ -76,6 +91,31 @@ class Search
         array_set($this->config, 'parsed_request', $result);
 
         return $result;
+    }
+
+    /**
+     * Parse the model name with the given key.
+     *
+     * @param string $model
+     * @param mixed $value
+     *
+     * @return mixed
+     */
+    private function parseModelName($model, $name, $value)
+    {
+        if (!class_exists($model)) {
+            return $value;
+        }
+
+        try {
+            $names = $model::find(array_it($value))->pluck($name)->all();
+
+            return implode(', ', $names);
+        } catch (\Exception $exception) {
+
+        }
+
+        return $value;
     }
 
     /**
