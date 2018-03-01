@@ -297,7 +297,7 @@ class Search
         }
 
         // No search result needed if our total records is less then our per page.
-        if ($this->getConfig('paginator.total') <= $this->getConfig('paginator.per_page')) {
+        if ($this->getConfig('paginator.total', 0) <= $this->getConfig('paginator.per_page', 0)) {
             return $tbody;
         }
 
@@ -371,8 +371,11 @@ class Search
         $total_columns = $this->checkColumns();
         $tr = $tbody->tr();
         $row_html = '';
-
         $row_html = 'No <strong>'.array_get($search_empty, 'name').'</strong> found.';
+
+        if (array_has($search_empty, 'none_found')) {
+            $row_html = array_get($search_empty, 'none_found');
+        }
 
         $tr->td(
             ['colspan' => $total_columns, 'style' => 'line-height: 50px;text-align:center;'],
