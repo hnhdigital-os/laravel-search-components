@@ -351,7 +351,19 @@ class Search
         $total_columns = $this->checkColumns();
         $tbody = Tag::tbody();
 
-        return $tbody;
+        if ($this->getConfig('paginator.has_more_pages')) {
+            $row_html = Html::a('Click to load more results.')->scriptLink()
+                ->addClass('action-load-next-page f-w-100')
+                ->data('page', $this->getConfig('paginator.page')+1);
+
+            $tr = $tbody->tr();
+            $tr->td(
+                ['colspan' => $total_columns, 'style' => 'line-height: 50px;text-align:center;'],
+                Html::span($row_html)->s()
+            );
+        }
+
+        return $tbody->prepare(['ignore_tags' => 'tbody']);
     }
 
     /**
@@ -737,7 +749,7 @@ class Search
 
         if (request::ajax()) {
 
-            $rows_name = 'rows';
+            $rows_name = request()->results_mode ?? 'rows';
             if ($this->getConfig('append')) {
                 $rows_name = 'append';
             } elseif ($this->getConfig('prepend')) {
