@@ -16,11 +16,13 @@
           <tbody class="search-result-rows">
             {!! $search->result !!}
           </tbody>
-          <thead class="search-footer">
+          <tbody class="search-footer">
             {!! $search->search_footer !!}
-          </thead>
+          </tbody>
         </table>
      </div>
+
+     {!! $footer or '' !!}
   </div>
 </div>
 
@@ -28,6 +30,7 @@
 @parent
 <form id="{{ $search->form_id }}" class="hnhdigital-search-form" novalidate="novalidate" action="{{ $search->fallback_route }}"  data-action="{{ $search->route }}" method="post" onsubmit="return false;">
   <input type="hidden" name="page" value="{{ $search->getPaginator('page') }}">
+  <input type="hidden" name="results_mode" value="rows">
   <button type="submit" class="hidden-search-button"></button>
 </form>
 
