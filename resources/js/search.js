@@ -15,6 +15,7 @@ $.searchComponentsSearch = {
       var form = $(this);
       var results = $('#'+$(this).attr('id').replace(new RegExp('-form$'), '-results'));
       var page = $(form).find('[name=page]').val();
+      var results_mode = $(form).find('[name=results_mode]').val();
 
       var action_url = form.data('action');
 
@@ -24,6 +25,7 @@ $.searchComponentsSearch = {
         action_url += '&';
       }
       action_url += 'page=' + page;
+      action_url += '&results_mode=' + results_mode;
 
       $.ajax(action_url, {
         data: $.searchComponentsSearch.serialize(form, results),
@@ -50,6 +52,7 @@ $.searchComponentsSearch = {
   updateResults: function(results, response) {
     results.find('.search-header').html($H.build(response.header));
     results.find('.search-notices').html($H.build(response.notices));
+    results.find('.search-footer').html($H.build(response.footer));
 
     var tbody_rows = results.find('.search-result-rows');
 
@@ -114,6 +117,40 @@ $(function() {
 
   $('.hnhdigital-search-results').on('submit', function() {
     var form_id = $(this).attr('id').replace(new RegExp('-results$'), '-form');
+    var form = $('#'+form_id);
     $('#' + form_id + ' button[type=submit]').trigger('click');
   });
+
+  $('.hnhdigital-search-results').one('click', '.action-load-next-page', function() {
+      var results = $(this).closest('.hnhdigital-search-results');
+      var form = $('#'+results.attr('id').replace(new RegExp('-results$'), '-form'));
+      $(form).find('[name=page]').val($(this).data('page'));
+      $(form).find('[name=results_mode]').val('append');
+      form.trigger('submit');
+
+      $(form).find('[name=page]').val(1);
+      $(form).find('[name=results_mode]').val('rows');
+  });
+
+  $(window).on('DOMContentLoaded load resize scroll', function() {
+    $('.action-load-next-page:visible').each(function(index) {
+      if (isElementInViewport(this)) {
+        if (typeof $(this).animateCss == 'function') {
+          $(this).animateCss('flipOutX');
+        }
+        $(this).trigger('click');
+      }
+    });
+  });
 });
+
+function isElementInViewport(el) {
+    var rect = el.getBoundingClientRect();
+
+    return (
+        rect.top >= 0 &&
+        rect.left >= 0 &&
+        rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+        rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+    );
+}
