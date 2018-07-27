@@ -121,7 +121,7 @@ $(function() {
     $('#' + form_id + ' button[type=submit]').trigger('click');
   });
 
-  $('.hnhdigital-search-results').one('click', '.action-load-next-page', function() {
+  $('.hnhdigital-search-results').on('click', '.action-load-next-page', function() {
       var results = $(this).closest('.hnhdigital-search-results');
       var form = $('#'+results.attr('id').replace(new RegExp('-results$'), '-form'));
       $(form).find('[name=page]').val($(this).data('page'));
