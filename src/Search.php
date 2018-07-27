@@ -97,7 +97,7 @@ class Search
      * Parse the model name with the given key.
      *
      * @param string $model
-     * @param mixed $value
+     * @param mixed  $value
      *
      * @return mixed
      */
@@ -112,7 +112,6 @@ class Search
 
             return implode(', ', $names);
         } catch (\Exception $exception) {
-
         }
 
         return $value;
@@ -355,7 +354,7 @@ class Search
         if ($this->getConfig('paginator.has_more_pages')) {
             $row_html = Html::a('Click to load more results.')->scriptLink()
                 ->addClass('action-load-next-page f-w-100')
-                ->data('page', $this->getConfig('paginator.page')+1);
+                ->data('page', $this->getConfig('paginator.page') + 1);
 
             $tr = $tbody->tr();
             $tr->td(
@@ -412,7 +411,7 @@ class Search
      * Get a secific entry in the config.
      *
      * @param string $key
-     * @param mixed $value
+     * @param mixed  $value
      */
     public function getConfig($key, $default = null)
     {
@@ -423,7 +422,7 @@ class Search
      * Set a secific entry in the config.
      *
      * @param string $key
-     * @param mixed $value
+     * @param mixed  $value
      */
     public function setConfig($key, $value)
     {
@@ -755,7 +754,6 @@ class Search
         $this->result_response = $response;
 
         if (request::ajax()) {
-
             $rows_name = request()->results_mode ?? 'rows';
             if ($this->getConfig('append')) {
                 $rows_name = 'append';
