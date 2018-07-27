@@ -289,6 +289,7 @@ class Search
         $total_columns = $this->checkColumns();
         $search_input = array_get($this->config, 'search_input', []);
 
+
         $tbody = Tag::tbody();
 
         // No search input.
@@ -305,7 +306,7 @@ class Search
         $tr = $tbody->tr(['class' => 'search-input']);
         $td_html = '';
 
-        // Default.{
+        // Default.
         $td_html = Html::input()->name('lookup')->placeholder(array_get($search_input, 'placeholder', ''))->value(array_get($this->config, 'request.lookup', ''))->addClass('search-field form-control')->form($this->form_id)->s();
 
         $tr->td(
@@ -545,6 +546,12 @@ class Search
         // Get the session.
         if (empty($request)) {
             $request = $this->session;
+        }
+
+        foreach ($request as $key => $value) {
+            if ($value === 'CLEAR') {
+                unset($request[$key]);
+            }
         }
 
         // Set the session, and the request data.
