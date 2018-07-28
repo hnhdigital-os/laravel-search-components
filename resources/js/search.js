@@ -122,6 +122,11 @@ $(function() {
   });
 
   $('.hnhdigital-search-results').on('click', '.action-load-next-page', function() {
+      if ($(this).data('loading-next-page')) {
+        return;
+      }
+
+      $(this).data('loading-next-page', true)
       var results = $(this).closest('.hnhdigital-search-results');
       var form = $('#'+results.attr('id').replace(new RegExp('-results$'), '-form'));
       $(form).find('[name=page]').val($(this).data('page'));
