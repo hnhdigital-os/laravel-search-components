@@ -441,7 +441,16 @@ class Search
         // Use the unique route as the session name.
         if (array_has($this->config, 'route_text')) {
             $name = str_replace(['[', ']', '::', ' '], ['', '-', '-', ''], array_get($this->config, 'route_text', ''));
-            $name .= '-'.hash('sha256', serialize(array_get($this->config, 'route_parameters', '')));
+
+            $route_parameters = array_get($this->config, 'route_parameters', []);
+
+            foreach ($route_parameters as $key => &$value) {
+                if ($value instanceof \Illuminate\Database\Eloquent\Model) {
+                    $value = $value->getKey();
+                }
+            }
+
+            $name .= '-'.hash('sha256', serialize($route_parameters));
 
             return $name;
         }
