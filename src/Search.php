@@ -288,7 +288,6 @@ class Search
         $total_columns = $this->checkColumns();
         $search_input = array_get($this->config, 'search_input', []);
 
-
         $tbody = Tag::tbody();
 
         // No search input.
@@ -296,8 +295,11 @@ class Search
             return $tbody;
         }
 
+        $this->parseRequest();
+
         // No search result needed if our total records is less then our per page.
-        if ($this->getConfig('paginator.total', 0) <= $this->getConfig('paginator.per_page', 0)) {
+        if (array_get($this->config, 'parsed_request.count', 0) == 0
+            && $this->getConfig('paginator.total', 0) <= $this->getConfig('paginator.per_page', 0)) {
             return $tbody;
         }
 
