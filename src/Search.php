@@ -257,7 +257,7 @@ class Search
         $tbody = Tag::tbody();
 
         // No search header.
-        if (empty($search_info)) {
+        if (empty($search_info) || in_array(request()->results_mode, ['append', 'prepend'])) {
             return $tbody;
         }
 
