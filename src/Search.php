@@ -150,6 +150,16 @@ class Search
     }
 
     /**
+     * Get Results ID.
+     *
+     * @return string
+     */
+    private function getResultsId()
+    {
+        return 'hnhdigital-'.array_get($this->config, 'name', '').'-results';
+    }
+
+    /**
      * Get Form ID.
      *
      * @return string
