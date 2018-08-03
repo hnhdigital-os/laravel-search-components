@@ -50,6 +50,11 @@ $.searchComponentsSearch = {
    * @return void
    */
   updateResults: function(results, response) {
+    if (!results.hasClass('hnhdigital-search-results')) {
+      var form_id = results.attr('id').replace(new RegExp('-form$'), '-results');
+      results = $('#'+form_id);
+    }
+
     results.find('.search-header').html($H.build(response.header));
     results.find('.search-notices').html($H.build(response.notices));
     results.find('.search-footer').html($H.build(response.footer));
