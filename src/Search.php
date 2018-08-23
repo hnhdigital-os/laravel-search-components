@@ -681,8 +681,8 @@ class Search
         // Run query.
         if (array_has($this->config, 'query_all', false) || array_has($this->config, 'all', false)) {
             $results = $query->get();
-            array_set($this->config, 'paginator.count', $results->count());
-            array_set($this->config, 'paginator.total', $results->count());
+            array_set($this->config, 'paginator.count', $results->count() + array_get($this->config, 'paginator.count', 0));
+            array_set($this->config, 'paginator.total', $results->count() + array_get($this->config, 'paginator.total', 0));
 
             return $results;
         }
