@@ -338,7 +338,7 @@ class Search
         $info = $this->search_info->prepare(['ignore_tags' => 'tbody']);
 
         $no_empty_check = false;
-        if ($this->getConfig('append') || $this->getConfig('prepend')) {
+        if ($this->getConfig('append') || $this->getConfig('prepend') || $this->getConfig('no_empty_check')) {
             $no_empty_check = true;
         }
 
