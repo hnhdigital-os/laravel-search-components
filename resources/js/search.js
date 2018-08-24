@@ -17,6 +17,12 @@ $.searchComponentsSearch = {
       var page = $(form).find('[name=page]').val();
       var results_mode = $(form).find('[name=results_mode]').val();
 
+      // Trigger on form.
+      results.trigger('hnhdigital-search::before-prep', [form]);
+
+      // Trigger on results.
+      form.trigger('hnhdigital-search::before-prep', [form]);
+
       var action_url = form.data('action');
 
       if (action_url.indexOf('?') == -1) {
@@ -26,6 +32,10 @@ $.searchComponentsSearch = {
       }
       action_url += 'page=' + page;
       action_url += '&results_mode=' + results_mode;
+
+      $.each(form.data('paramaters'), function(key, value) {
+        action_url += '&'+key+'=' + value;
+      });
 
       $.ajax(action_url, {
         data: $.searchComponentsSearch.serialize(form, results),
