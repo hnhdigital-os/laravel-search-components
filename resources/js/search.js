@@ -130,12 +130,28 @@ $.searchComponentsSearch = {
 $(function() {
   $.searchComponentsSearch.autoInit();
 
+  /**
+   * Run a search request.
+   */
   $('.hnhdigital-search-results').on('submit', function() {
     var form_id = $(this).attr('id').replace(new RegExp('-results$'), '-form');
     var form = $('#'+form_id);
     $('#' + form_id + ' button[type=submit]').trigger('click');
   });
 
+  /**
+   * Provide triggerable action to update the search results for a given element.
+   */
+  $('.hnhdigital-search-results').on('updateResults', function(e, response) {
+    var form_id = $(this).attr('id').replace(new RegExp('-results$'), '-form');
+    var form = $('#'+form_id);
+
+    $.searchComponentsSearch.updateResults(form, response);
+  });
+
+  /**
+   * Click action for Loading next page of results.
+   */
   $('.hnhdigital-search-results').on('click', '.action-load-next-page', function() {
       if ($(this).data('loading-next-page')) {
         return;
@@ -152,6 +168,9 @@ $(function() {
       $(form).find('[name=results_mode]').val('rows');
   });
 
+  /**
+   * Run a next page of results when the link comes into view.
+   */
   $(window).on('DOMContentLoaded load resize scroll', function() {
     $('.action-load-next-page:visible').each(function(index) {
       if (isElementInViewport(this)) {
@@ -164,6 +183,9 @@ $(function() {
   });
 });
 
+/**
+ * Is the element in the viewport?
+ */
 function isElementInViewport(el) {
     var rect = el.getBoundingClientRect();
 
