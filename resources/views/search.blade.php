@@ -1,10 +1,10 @@
 <div class="hnhdigital-search">
-  <div id="hnhdigital-{{ $search->name }}-results" class="hnhdigital-search-results panel-body tab-pane active" {{ $search->result_attributes or '' }}>
+  <div id="hnhdigital-{{ $search->name }}-results" class="hnhdigital-search-results panel-body tab-pane active {!! $search->result_class ?? '' !!}" {!! $search->result_attributes ?? '' !!}>
 
-     {{ $slot or '' }}
+     {{ $slot ?? '' }}
 
      <div class="table-responsive">
-        <table class="table{{ $table_class or '' }}">
+        <table class="table{{ $table_class ?? '' }}">
           {!! $search->columns !!}
           <thead class="search-header">
             {!! $search->search_header !!}
@@ -22,7 +22,7 @@
         </table>
      </div>
 
-     {!! $footer or '' !!}
+     {!! $footer ?? '' !!}
   </div>
 </div>
 
