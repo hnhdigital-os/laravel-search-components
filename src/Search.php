@@ -5,6 +5,7 @@ namespace HnhDigital\SearchComponents;
 use HnhDigital\ModelSearch\ModelSearch;
 use Html;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Arr;
 use Request;
 use Tag;
 
@@ -34,7 +35,7 @@ class Search
      */
     private function checkColumns()
     {
-        $total_columns = array_get($this->config, 'columns.total', 1);
+        $total_columns = Arr::get($this->config, 'columns.total', 1);
 
         return $total_columns;
     }
@@ -59,7 +60,7 @@ class Search
             $result['attributes'] = $this->config['model']->getSearchableAttributes();
 
             foreach ($this->request as $key => $value) {
-                if (!array_has($result['attributes'], $key) || empty($value)) {
+                if (!Arr::has($result['attributes'], $key) || empty($value)) {
                     continue;
                 }
 
@@ -71,15 +72,15 @@ class Search
                 foreach ($filters as $filter) {
                     list($operator_name, $operator, $value) = ModelSearch::parseInlineOperator($filter);
 
-                    if (array_has($result['attributes'], $key.'.source_model', false)) {
-                        $model = array_get($result['attributes'], $key.'.source_model', false);
-                        $model_key = array_get($result['attributes'], $key.'.source_model_key', null);
-                        $model_name = array_get($result['attributes'], $key.'.source_model_name', 'display_name');
+                    if (Arr::has($result['attributes'], $key.'.source_model', false)) {
+                        $model = Arr::get($result['attributes'], $key.'.source_model', false);
+                        $model_key = Arr::get($result['attributes'], $key.'.source_model_key', null);
+                        $model_name = Arr::get($result['attributes'], $key.'.source_model_name', 'display_name');
 
                         $value = $this->parseModelName($model, $model_name, $value, $model_key);
                     }
 
-                    $title = array_get($result['attributes'], $key.'.title', $key);
+                    $title = Arr::get($result['attributes'], $key.'.title', $key);
                     $result['text'][] = sprintf('<strong>%s</strong> %s <strong>%s</strong>', $title, $operator_name, $value);
 
                     $count++;
@@ -89,7 +90,7 @@ class Search
 
         $result['count'] = $count;
 
-        array_set($this->config, 'parsed_request', $result);
+        Arr::set($this->config, 'parsed_request', $result);
 
         return $result;
     }
@@ -108,14 +109,12 @@ class Search
             return $value;
         }
 
-        dd($model::getKeyName());
-
         try {
             $lookup = $model::query();
             if (!is_null($key)) {
-                $lookup->whereIn($key, array_it($value));
+                $lookup->whereIn($key, collect($value));
             } else {
-                $lookup->find(array_it($value));
+                $lookup->find(collect($value));
             }
 
             $names = $lookup->pluck($name)->all();
@@ -135,11 +134,11 @@ class Search
     private function getColumns()
     {
         $total_columns = $this->checkColumns();
-        $columns = array_get($this->config, 'columns', []);
+        $columns = Arr::get($this->config, 'columns', []);
 
         $html = '';
         for ($column = 0; $column < $total_columns; $column++) {
-            $html .= Html::col()->width(array_get($columns, $column.'.width', ''));
+            $html .= Html::col()->width(Arr::get($columns, $column.'.width', ''));
         }
 
         if ($total_columns > 0) {
@@ -166,7 +165,7 @@ class Search
      */
     private function getResultsId()
     {
-        return 'hnhdigital-'.array_get($this->config, 'name', '').'-results';
+        return 'hnhdigital-'.Arr::get($this->config, 'name', '').'-results';
     }
 
     /**
@@ -176,7 +175,7 @@ class Search
      */
     private function getFormId()
     {
-        return 'hnhdigital-'.array_get($this->config, 'name', '').'-form';
+        return 'hnhdigital-'.Arr::get($this->config, 'name', '').'-form';
     }
 
     /**
@@ -186,8 +185,8 @@ class Search
      */
     private function getPaginationPerPage()
     {
-        $pagination_per_page = array_get($this->config, 'pagination_per_page', 15);
-        $page = array_get($this->config, 'page', 1);
+        $pagination_per_page = Arr::get($this->config, 'pagination_per_page', 15);
+        $page = Arr::get($this->config, 'page', 1);
         $page = request('page', $page);
         $this->config['page'] = $page;
 
@@ -216,10 +215,10 @@ class Search
     private function getPaginator($item = null)
     {
         if (!is_null($item)) {
-            return array_get($this->config, 'paginator.'.$item, '');
+            return Arr::get($this->config, 'paginator.'.$item, '');
         }
 
-        return array_get($this->config, 'paginator', []);
+        return Arr::get($this->config, 'paginator', []);
     }
 
     /**
@@ -230,7 +229,7 @@ class Search
     private function getSearchHeader()
     {
         $total_columns = $this->checkColumns();
-        $search_header = array_get($this->config, 'search_header', []);
+        $search_header = Arr::get($this->config, 'search_header', []);
         $tbody = Tag::tbody();
 
         // No search header.
@@ -273,7 +272,7 @@ class Search
     private function getSearchInfo()
     {
         $total_columns = $this->checkColumns();
-        $search_info = array_get($this->config, 'search_info', []);
+        $search_info = Arr::get($this->config, 'search_info', []);
         $tbody = Tag::tbody();
 
         // No search header.
@@ -283,11 +282,11 @@ class Search
 
         $this->parseRequest();
 
-        if (array_get($this->config, 'parsed_request.count', 0) == 0) {
+        if (Arr::get($this->config, 'parsed_request.count', 0) == 0) {
             return $tbody;
         }
 
-        $td_html = 'Filtering by: '.implode('; ', array_get($this->config, 'parsed_request.text', [])).'. ';
+        $td_html = 'Filtering by: '.implode('; ', Arr::get($this->config, 'parsed_request.text', [])).'. ';
 
         $tr = $tbody->tr(['class' => 'search-info']);
         $tr->td(
@@ -306,7 +305,7 @@ class Search
     private function getSearchInput()
     {
         $total_columns = $this->checkColumns();
-        $search_input = array_get($this->config, 'search_input', []);
+        $search_input = Arr::get($this->config, 'search_input', []);
 
         $tbody = Tag::tbody();
 
@@ -318,7 +317,7 @@ class Search
         $this->parseRequest();
 
         // No search result needed if our total records is less then our per page.
-        if (array_get($this->config, 'parsed_request.count', 0) == 0
+        if (Arr::get($this->config, 'parsed_request.count', 0) == 0
             && $this->getConfig('paginator.total', 0) <= $this->getConfig('paginator.per_page', 0)) {
             return $tbody;
         }
@@ -328,7 +327,7 @@ class Search
         $td_html = '';
 
         // Default.
-        $td_html = Html::input()->name('lookup')->placeholder(array_get($search_input, 'placeholder', ''))->value(array_get($this->config, 'request.lookup', ''))->addClass('search-field form-control')->form($this->form_id)->s();
+        $td_html = Html::input()->name('lookup')->placeholder(Arr::get($search_input, 'placeholder', ''))->value(Arr::get($this->config, 'request.lookup', ''))->addClass('search-field form-control')->form($this->form_id)->s();
 
         $tr->td(
             ['colspan' => $total_columns],
@@ -352,7 +351,7 @@ class Search
             $no_empty_check = true;
         }
 
-        if (!$no_empty_check && array_get($this->config, 'paginator.total', 0) === 0) {
+        if (!$no_empty_check && Arr::get($this->config, 'paginator.total', 0) === 0) {
             $empty = $this->search_empty->prepare(['ignore_tags' => 'tbody']);
 
             return request::ajax() ? array_merge($info, $empty) : $info.$empty;
@@ -395,7 +394,7 @@ class Search
      */
     private function getSearchEmpty()
     {
-        $search_empty = array_get($this->config, 'search_empty', []);
+        $search_empty = Arr::get($this->config, 'search_empty', []);
         $tbody = Tag::tbody();
 
         if (empty($search_empty)) {
@@ -405,10 +404,10 @@ class Search
         $total_columns = $this->checkColumns();
         $tr = $tbody->tr();
         $row_html = '';
-        $row_html = 'No <strong>'.array_get($search_empty, 'name').'</strong> found.';
+        $row_html = 'No <strong>'.Arr::get($search_empty, 'name').'</strong> found.';
 
-        if (array_has($search_empty, 'none_found')) {
-            $row_html = array_get($search_empty, 'none_found');
+        if (Arr::has($search_empty, 'none_found')) {
+            $row_html = Arr::get($search_empty, 'none_found');
         }
 
         $tr->td(
@@ -437,7 +436,7 @@ class Search
      */
     public function getConfig($key, $default = null)
     {
-        return array_get($this->config, $key, $default);
+        return Arr::get($this->config, $key, $default);
     }
 
     /**
@@ -448,7 +447,7 @@ class Search
      */
     public function setConfig($key, $value)
     {
-        array_set($this->config, $key, $value);
+        Arr::set($this->config, $key, $value);
 
         return $this;
     }
@@ -461,10 +460,10 @@ class Search
     private function getSessionName()
     {
         // Use the unique route as the session name.
-        if (array_has($this->config, 'route_text')) {
-            $name = str_replace(['[', ']', '::', ' '], ['', '-', '-', ''], array_get($this->config, 'route_text', ''));
+        if (Arr::has($this->config, 'route_text')) {
+            $name = str_replace(['[', ']', '::', ' '], ['', '-', '-', ''], Arr::get($this->config, 'route_text', ''));
 
-            $route_parameters = array_get($this->config, 'route_parameters', []);
+            $route_parameters = Arr::get($this->config, 'route_parameters', []);
 
             foreach ($route_parameters as $key => &$value) {
                 if ($value instanceof \Illuminate\Database\Eloquent\Model) {
@@ -480,8 +479,8 @@ class Search
         $name = $this->name;
 
         // Use the provided class and search name.
-        if (array_has($this->config, 'class')) {
-            if (array_get($this->config, 'class', false)) {
+        if (Arr::has($this->config, 'class')) {
+            if (Arr::get($this->config, 'class', false)) {
                 $name .= '_'.snake_case(str_replace('\\', '', $this->config['class']));
             }
 
@@ -502,7 +501,7 @@ class Search
     {
         // Turn off the the search empty option.
         if ($config === false) {
-            array_set($this->config, 'search_empty', false);
+            Arr::set($this->config, 'search_empty', false);
 
             return;
         }
@@ -518,7 +517,7 @@ class Search
 
         $config = array_replace_recursive($default_config, $config);
 
-        array_set($this->config, 'search_empty', $config);
+        Arr::set($this->config, 'search_empty', $config);
     }
 
     /**
@@ -532,7 +531,7 @@ class Search
     {
         // Turn off the the search empty option.
         if ($config === false) {
-            array_set($this->config, 'search_input', false);
+            Arr::set($this->config, 'search_input', false);
 
             return;
         }
@@ -548,7 +547,7 @@ class Search
 
         $config = array_replace_recursive($default_config, $config);
 
-        array_set($this->config, 'search_input', $config);
+        Arr::set($this->config, 'search_input', $config);
     }
 
     /**
@@ -639,8 +638,8 @@ class Search
      */
     private function setRoute(...$arguments)
     {
-        $this->config['route_text'] = array_get($arguments, 0, '');
-        $this->config['route_parameters'] = array_get($arguments, 1, []);
+        $this->config['route_text'] = Arr::get($arguments, 0, '');
+        $this->config['route_parameters'] = Arr::get($arguments, 1, []);
         $this->config['route'] = route(...$arguments);
     }
 
@@ -663,7 +662,7 @@ class Search
      */
     private function setPaginator($results)
     {
-        $paginator = array_get($this->config, 'paginator', []);
+        $paginator = Arr::get($this->config, 'paginator', []);
 
         $paginator['count'] = $results->count();
         $paginator['page'] = $results->currentPage();
@@ -676,7 +675,7 @@ class Search
         $paginator['previous_page_url'] = $results->previousPageUrl();
         $paginator['total'] = $results->total();
 
-        array_set($this->config, 'paginator', $paginator);
+        Arr::set($this->config, 'paginator', $paginator);
     }
 
     /**
@@ -689,10 +688,10 @@ class Search
         $this->query = clone $query;
 
         // Run query.
-        if (array_has($this->config, 'query_all', false) || array_has($this->config, 'all', false)) {
+        if (Arr::has($this->config, 'query_all', false) || Arr::has($this->config, 'all', false)) {
             $results = $query->get();
-            array_set($this->config, 'paginator.count', $results->count() + array_get($this->config, 'paginator.count', 0));
-            array_set($this->config, 'paginator.total', $results->count() + array_get($this->config, 'paginator.total', 0));
+            Arr::set($this->config, 'paginator.count', $results->count() + Arr::get($this->config, 'paginator.count', 0));
+            Arr::set($this->config, 'paginator.total', $results->count() + Arr::get($this->config, 'paginator.total', 0));
 
             return $results;
         }
@@ -756,7 +755,7 @@ class Search
                 return $this->{$get_method}();
             }
 
-            return array_get($this->config, snake_case($method), '');
+            return Arr::get($this->config, snake_case($method), '');
         }
 
         $set_method = 'set'.studly_case($method);
@@ -768,7 +767,7 @@ class Search
         }
 
         if (count($arguments) == 1) {
-            $this->config[snake_case($method)] = array_get($arguments, 0);
+            $this->config[snake_case($method)] = Arr::get($arguments, 0);
         }
 
         return $this;
@@ -797,7 +796,7 @@ class Search
                 'notices'  => $this->notices,
                 $rows_name => $this->result,
                 'footer'   => $this->search_footer,
-                'total'    => array_get($this->config, 'paginator.total'),
+                'total'    => Arr::get($this->config, 'paginator.total'),
             ];
 
             return $result + $response;
