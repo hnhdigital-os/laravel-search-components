@@ -73,9 +73,10 @@ class Search
 
                     if (array_has($result['attributes'], $key.'.source_model', false)) {
                         $model = array_get($result['attributes'], $key.'.source_model', false);
+                        $model_key = array_get($result['attributes'], $key.'.source_model_key', null);
                         $model_name = array_get($result['attributes'], $key.'.source_model_name', 'display_name');
 
-                        $value = $this->parseModelName($model, $model_name, $value);
+                        $value = $this->parseModelName($model, $model_name, $value, $model_key);
                     }
 
                     $title = array_get($result['attributes'], $key.'.title', $key);
@@ -101,14 +102,23 @@ class Search
      *
      * @return mixed
      */
-    private function parseModelName($model, $name, $value)
+    private function parseModelName($model, $name, $value, $key = null)
     {
         if (!class_exists($model)) {
             return $value;
         }
 
+        dd($model::getKeyName());
+
         try {
-            $names = $model::find(array_it($value))->pluck($name)->all();
+            $lookup = $model::query();
+            if (!is_null($key)) {
+                $lookup->whereIn($key, array_it($value));
+            } else {
+                $lookup->find(array_it($value));
+            }
+
+            $names = $lookup->pluck($name)->all();
 
             return implode(', ', $names);
         } catch (\Exception $exception) {
