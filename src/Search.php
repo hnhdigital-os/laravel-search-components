@@ -77,6 +77,12 @@ class Search
                         $model_key = Arr::get($result['attributes'], $key.'.source_model_key', null);
                         $model_name = Arr::get($result['attributes'], $key.'.source_model_name', 'display_name');
 
+                        $method_transform = 'transform'.studly_case( Arr::get($result['attributes'], $key.'.source')).'Value';
+
+                        if (method_exists($this->config['model'], $method_transform)) {
+                            $value = $this->config['model']->$method_transform($value);
+                        }
+
                         $value = $this->parseModelName($model, $model_name, $value, $model_key);
                     }
 
