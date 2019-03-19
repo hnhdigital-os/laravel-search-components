@@ -100,6 +100,14 @@ $.searchComponentsSearch = {
     var search = {};
 
     results.find('.search-field').each(function() {
+        if ($(this).attr('type') == 'radio' || $(this).attr('type') == 'checkbox') {
+          if ($(this).prop('checked')) {
+            search[this.name] = $(this).val();
+          }
+
+          return;
+        }
+
         search[this.name] = $(this).val();
     });
 
