@@ -4,7 +4,7 @@
      {{ $slot ?? '' }}
 
      <div class="table-responsive">
-        <table class="table{{ $table_class ?? '' }}">
+        <table class="table {{ $search->table_class ?? '' }}">
           {!! $search->columns !!}
           <thead class="search-header">
             {!! $search->search_header !!}
