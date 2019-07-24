@@ -1,5 +1,5 @@
 <div class="hnhdigital-search">
-  <div id="hnhdigital-{{ $search->name }}-results" class="hnhdigital-search-results panel-body tab-pane active {!! $search->result_class ?? '' !!}" {!! $search->result_attributes ?? '' !!}>
+  <div id="hnhdigital-{{ $search->name }}-results" class="hnhdigital-search-results {!! $search->result_class ?? '' !!}" {!! $search->result_attributes ?? '' !!}>
 
      {{ $slot ?? '' }}
 
