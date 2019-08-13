@@ -13,7 +13,7 @@ $.searchComponentsSearch = {
   autoInit: function() {
     $('.hnhdigital-search-form').on('submit', function() {
       var form = $(this);
-      var results = $('#'+$(this).attr('id').replace(new RegExp('-form$'), '-results'));
+      var results = $('.'+$(this).attr('id').replace(new RegExp('-form$'), '-results'));
       var page = $(form).find('[name=page]').val();
       var results_mode = $(form).find('[name=results_mode]').val();
 
@@ -62,7 +62,7 @@ $.searchComponentsSearch = {
   updateResults: function(results, response) {
     if (!results.hasClass('hnhdigital-search-results')) {
       var form_id = results.attr('id').replace(new RegExp('-form$'), '-results');
-      results = $('#'+form_id);
+      results = $('.'+form_id);
     }
 
     results.find('.search-header').html($H.build(response.header));
@@ -90,7 +90,7 @@ $.searchComponentsSearch = {
     }
 
     // Trigger on form.
-    $('#' + form_id).trigger('hnhdigital-search::success', [response]);
+    $('.' + form_id).trigger('hnhdigital-search::success', [response]);
 
     // Trigger on results.
     $(results).trigger('hnhdigital-search::success', [response]);
@@ -143,8 +143,8 @@ $(function() {
    */
   $('.hnhdigital-search-results').on('submit', function() {
     var form_id = $(this).attr('id').replace(new RegExp('-results$'), '-form');
-    var form = $('#'+form_id);
-    $('#' + form_id + ' button[type=submit]').trigger('click');
+    var form = $('.'+form_id);
+    $('.' + form_id + ' button[type=submit]').trigger('click');
   });
 
   /**
@@ -152,7 +152,7 @@ $(function() {
    */
   $('.hnhdigital-search-results').on('updateResults', function(e, response) {
     var form_id = $(this).attr('id').replace(new RegExp('-results$'), '-form');
-    var form = $('#'+form_id);
+    var form = $('.'+form_id);
 
     $.searchComponentsSearch.updateResults(form, response);
   });
@@ -167,7 +167,7 @@ $(function() {
 
       $(this).data('loading-next-page', true)
       var results = $(this).closest('.hnhdigital-search-results');
-      var form = $('#'+results.attr('id').replace(new RegExp('-results$'), '-form'));
+      var form = $('.'+results.attr('id').replace(new RegExp('-results$'), '-form'));
       $(form).find('[name=page]').val($(this).data('page'));
       $(form).find('[name=results_mode]').val('append');
       form.trigger('submit');
