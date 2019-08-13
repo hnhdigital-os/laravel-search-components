@@ -94,6 +94,9 @@ $.searchComponentsSearch = {
 
     // Trigger on results.
     $(results).trigger('hnhdigital-search::success', [response]);
+
+    // Trigger a scroll event.
+    $(window).trigger('scroll');
   },
 
   serialize: function(form, results) {
