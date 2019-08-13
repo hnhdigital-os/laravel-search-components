@@ -123,10 +123,11 @@ class Search
                 $lookup->find(collect($value));
             }
 
-            $names = $lookup->pluck($name)->all();
+            $names = $lookup->get()->pluck($name)->all();
 
             return implode(', ', $names);
         } catch (\Exception $exception) {
+
         }
 
         return $value;
@@ -585,6 +586,10 @@ class Search
 
         foreach ($request as $key => $value) {
             if ($value === 'CLEAR') {
+                unset($request[$key]);
+            }
+
+            if (is_null($value)) {
                 unset($request[$key]);
             }
         }
