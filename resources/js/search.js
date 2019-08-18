@@ -17,6 +17,12 @@ $.searchComponentsSearch = {
       var page = $(form).find('[name=page]').val();
       var results_mode = $(form).find('[name=results_mode]').val();
 
+      // Abort an existing request.
+      if (typeof form.data('xhr') != 'undefined') {
+        form.data('xhr').abort();
+        form.removeData('xhr');
+      }
+
       // Trigger on form.
       results.trigger('hnhdigital-search::before-prep', [form]);
 
@@ -37,7 +43,7 @@ $.searchComponentsSearch = {
         action_url += '&'+key+'=' + value;
       });
 
-      $.ajax(action_url, {
+      var xhr = $.ajax(action_url, {
         data: $.searchComponentsSearch.serialize(form, results),
         beforeSend: function() {
           // Trigger on form.
@@ -50,6 +56,9 @@ $.searchComponentsSearch = {
           $.searchComponentsSearch.updateResults(results, response);
         }
       });
+
+      form.data('xhr', xhr);
+
       return false;
     });
   },
@@ -178,6 +187,7 @@ $(function() {
             $(this).prop('checked', false);
             break;
           }
+
           $(this).val('');
       }
     });
