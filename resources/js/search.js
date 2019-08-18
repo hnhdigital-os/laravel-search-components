@@ -174,6 +174,10 @@ $(function() {
           $(this).prop('selectedIndex', 0);
           break;
         default:
+          if ($(this).attr('type') == 'radio' || $(this).attr('type') == 'checkbox') {
+            $(this).prop('checked', false);
+            break;
+          }
           $(this).val('');
       }
     });
