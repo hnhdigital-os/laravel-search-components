@@ -161,6 +161,33 @@ $(function() {
   });
 
   /**
+   * Reset inputs.
+   */
+  $('.hnhdigital-search-results').on('reset', function(e) {
+    var results = $(this);
+    var result_id = results.attr('id');
+    var form_id = results.attr('id').replace(new RegExp('-form$'), '-results');
+
+    $('.' + result_id + ' .search-field').each(function() {
+      switch ($(this).prop('tagName')) {
+        case 'SELECT':
+          $(this).prop('selectedIndex', 0);
+          break;
+        default:
+          $(this).val('');
+      }
+    });
+
+    // Trigger on form.
+    $('.' + form_id).trigger('hnhdigital-search::reset');
+
+    // Trigger on results.
+    $(results).trigger('hnhdigital-search::reset');
+
+    $(results).submit();
+  });
+
+  /**
    * Click action for Loading next page of results.
    */
   $('.hnhdigital-search-results').on('click', '.action-load-next-page', function() {
