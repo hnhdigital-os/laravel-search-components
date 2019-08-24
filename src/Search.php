@@ -836,6 +836,7 @@ class Search
             $result = [
                 'xhr_route' => $this->route,
                 'request'   => $this->request(),
+                'columns'   => (string) $this->columns,
                 'header'    => $this->search_header,
                 'notices'   => $this->notices,
                 $rows_name  => $this->result,

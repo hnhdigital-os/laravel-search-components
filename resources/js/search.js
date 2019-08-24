@@ -80,6 +80,10 @@ $.searchComponentsSearch = {
 
     var tbody_rows = results.find('.search-result-rows');
 
+    if (typeof response.columns != 'undefined') {
+      results.find('colgroup').replaceWith(response.columns);
+    }
+
     if (typeof response.rows != 'undefined') {
       tbody_rows.html($H.build(response.rows));
     }
