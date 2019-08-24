@@ -94,6 +94,9 @@ $.searchComponentsSearch = {
 
     var form_id = results.attr('id').replace(new RegExp('-results$'), '-form');
 
+    // Update action xhr route.
+    $('.' + form_id).data('action', response.xhr_route);
+
     if (results.data('scroll-to')) {
       window.scrollTo(0, 0);
     }
