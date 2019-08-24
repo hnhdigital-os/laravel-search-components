@@ -19,6 +19,13 @@ class Search
     private $config;
 
     /**
+     * Request.
+     *
+     * @var array
+     */
+    private $request = [];
+
+    /**
      * Construct.
      */
     public function __construct($config = [])
@@ -237,22 +244,29 @@ class Search
     {
         $total_columns = $this->checkColumns();
         $search_header = Arr::get($this->config, 'search_header', []);
-        $tbody = Tag::tbody();
+        $thead = Tag::thead();
 
         // No search header.
         if (empty($search_header)) {
-            return $tbody;
+            return $thead;
         }
 
-        $tr = $tbody->tr(['class' => 'search-input']);
-        $td_html = 'test';
+        $tr = $thead->tr(['class' => 'search-header']);
 
-        $tr->td(
-            ['colspan' => $total_columns],
-            $td_html
-        );
+        $count = 0;
+        foreach ($search_header as $td) {
+            $tr->th(...$td);
 
-        return $tbody;
+            ++$count;
+        }
+
+        // Fill in any blanks.
+        for ($i = $count; $i < $total_columns; $i++) {
+            $td_html = '';
+            $tr->th($td_html);
+        }
+
+        return $thead->prepare(['ignore_tags' => 'thead']);
     }
 
     /**
@@ -313,6 +327,7 @@ class Search
     {
         $total_columns = $this->checkColumns();
         $search_input = Arr::get($this->config, 'search_input', []);
+        $force_search_input = Arr::get($this->config, 'force_search_input', false);
 
         $tbody = Tag::tbody();
 
@@ -324,7 +339,7 @@ class Search
         $this->parseRequest();
 
         // No search result needed if our total records is less then our per page.
-        if (Arr::get($this->config, 'parsed_request.count', 0) == 0
+        if (!$force_search_input && Arr::get($this->config, 'parsed_request.count', 0) == 0
             && $this->getConfig('paginator.total', 0) <= $this->getConfig('paginator.per_page', 0)) {
             return $tbody;
         }
@@ -707,7 +722,23 @@ class Search
             return $results;
         }
 
-        $results = $query->paginate($this->pagination);
+        // Use existing columns, default to all.
+        if (method_exists($query, 'getQuery')) {
+            $query_builder = $query->getQuery();
+
+            // Builder doesn't have columns, move one level up.
+            if (!property_exists($query_builder, 'columns')) {
+                $query_builder = $query_builder->getQuery();
+            }
+
+            $columns = $query_builder->columns;
+        }
+
+        if (empty($columns)) {
+            $columns = ['*'];
+        }
+
+        $results = $query->paginate($this->pagination, $columns);
         $this->paginator = $results;
 
         return $results;
@@ -803,11 +834,13 @@ class Search
             }
 
             $result = [
-                'header'   => $this->search_header,
-                'notices'  => $this->notices,
-                $rows_name => $this->result,
-                'footer'   => $this->search_footer,
-                'total'    => Arr::get($this->config, 'paginator.total'),
+                'xhr_route' => $this->route,
+                'request'   => $this->request(),
+                'header'    => $this->search_header,
+                'notices'   => $this->notices,
+                $rows_name  => $this->result,
+                'footer'    => $this->search_footer,
+                'total'     => Arr::get($this->config, 'paginator.total'),
             ];
 
             return $result + $response;
