@@ -187,7 +187,7 @@ $(function() {
     $('.' + result_id + ' .search-field').each(function() {
       switch ($(this).prop('tagName')) {
         case 'SELECT':
-          $(this).prop('selectedIndex', 0);
+          $(this).prop('selectedIndex', 0).trigger('change');
           break;
         default:
           if ($(this).attr('type') == 'radio' || $(this).attr('type') == 'checkbox') {
