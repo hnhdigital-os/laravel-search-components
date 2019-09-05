@@ -2,6 +2,7 @@
 
 namespace HnhDigital\SearchComponents;
 
+use Str;
 use HnhDigital\ModelSearch\ModelSearch;
 use Html;
 use Illuminate\Pagination\Paginator;
@@ -84,7 +85,7 @@ class Search
                         $model_key = Arr::get($result['attributes'], $key.'.source_model_key', null);
                         $model_name = Arr::get($result['attributes'], $key.'.source_model_name', 'display_name');
 
-                        $method_transform = 'transform'.studly_case( Arr::get($result['attributes'], $key.'.source')).'Value';
+                        $method_transform = 'transform'.Str::studly( Arr::get($result['attributes'], $key.'.source')).'Value';
 
                         if (method_exists($this->config['model'], $method_transform)) {
                             $value = $this->config['model']->$method_transform($value);
@@ -503,7 +504,7 @@ class Search
         // Use the provided class and search name.
         if (Arr::has($this->config, 'class')) {
             if (Arr::get($this->config, 'class', false)) {
-                $name .= '_'.snake_case(str_replace('\\', '', $this->config['class']));
+                $name .= '_'.Str::snake(str_replace('\\', '', $this->config['class']));
             }
 
             return $name;
@@ -754,7 +755,7 @@ class Search
      */
     public function __get($name)
     {
-        return $this->{camel_case($name)}();
+        return $this->{Str::camel($name)}();
     }
 
     /**
@@ -767,7 +768,7 @@ class Search
      */
     public function __set($name, $value)
     {
-        return $this->{camel_case($name)}($value);
+        return $this->{Str::camel($name)}($value);
     }
 
     /**
@@ -791,16 +792,16 @@ class Search
         }
 
         if (count($arguments) == 0) {
-            $get_method = 'get'.studly_case($method);
+            $get_method = 'get'.Str::studly($method);
 
             if (method_exists($this, $get_method)) {
                 return $this->{$get_method}();
             }
 
-            return Arr::get($this->config, snake_case($method), '');
+            return Arr::get($this->config, Str::snake($method), '');
         }
 
-        $set_method = 'set'.studly_case($method);
+        $set_method = 'set'.Str::studly($method);
 
         if (method_exists($this, $set_method)) {
             $this->{$set_method}(...$arguments);
@@ -809,7 +810,7 @@ class Search
         }
 
         if (count($arguments) == 1) {
-            $this->config[snake_case($method)] = Arr::get($arguments, 0);
+            $this->config[Str::snake($method)] = Arr::get($arguments, 0);
         }
 
         return $this;
