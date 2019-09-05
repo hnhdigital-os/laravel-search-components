@@ -3,12 +3,12 @@
 namespace HnhDigital\SearchComponents;
 
 use Str;
-use HnhDigital\ModelSearch\ModelSearch;
-use Html;
-use Illuminate\Pagination\Paginator;
-use Illuminate\Support\Arr;
-use Request;
 use Tag;
+use Html;
+use Request;
+use Illuminate\Support\Arr;
+use Illuminate\Pagination\Paginator;
+use HnhDigital\ModelSearch\ModelSearch;
 
 class Search
 {
@@ -68,24 +68,24 @@ class Search
             $result['attributes'] = $this->config['model']->getSearchableAttributes();
 
             foreach ($this->request as $key => $value) {
-                if (!Arr::has($result['attributes'], $key) || empty($value)) {
+                if (! Arr::has($result['attributes'], $key) || empty($value)) {
                     continue;
                 }
 
                 // Convert string to filter array.
-                if (!is_array($filters = $value)) {
+                if (! is_array($filters = $value)) {
                     $filters = [['', $value]];
                 }
 
                 foreach ($filters as $filter) {
-                    list($operator_name, $operator, $value) = ModelSearch::parseInlineOperator($filter);
+                    [$operator_name, $operator, $value] = ModelSearch::parseInlineOperator($filter);
 
                     if (Arr::has($result['attributes'], $key.'.source_model', false)) {
                         $model = Arr::get($result['attributes'], $key.'.source_model', false);
                         $model_key = Arr::get($result['attributes'], $key.'.source_model_key', null);
                         $model_name = Arr::get($result['attributes'], $key.'.source_model_name', 'display_name');
 
-                        $method_transform = 'transform'.Str::studly( Arr::get($result['attributes'], $key.'.source')).'Value';
+                        $method_transform = 'transform'.Str::studly(Arr::get($result['attributes'], $key.'.source')).'Value';
 
                         if (method_exists($this->config['model'], $method_transform)) {
                             $value = $this->config['model']->$method_transform($value);
@@ -119,13 +119,13 @@ class Search
      */
     private function parseModelName($model, $name, $value, $key = null)
     {
-        if (!class_exists($model)) {
+        if (! class_exists($model)) {
             return $value;
         }
 
         try {
             $lookup = $model::query();
-            if (!is_null($key)) {
+            if (! is_null($key)) {
                 $lookup->whereIn($key, collect($value));
             } else {
                 $lookup->find(collect($value));
@@ -135,7 +135,6 @@ class Search
 
             return implode(', ', $names);
         } catch (\Exception $exception) {
-
         }
 
         return $value;
@@ -229,7 +228,7 @@ class Search
      */
     private function getPaginator($item = null)
     {
-        if (!is_null($item)) {
+        if (! is_null($item)) {
             return Arr::get($this->config, 'paginator.'.$item, '');
         }
 
@@ -258,7 +257,7 @@ class Search
         foreach ($search_header as $td) {
             $tr->th(...$td);
 
-            ++$count;
+            $count++;
         }
 
         // Fill in any blanks.
@@ -340,7 +339,7 @@ class Search
         $this->parseRequest();
 
         // No search result needed if our total records is less then our per page.
-        if (!$force_search_input && Arr::get($this->config, 'parsed_request.count', 0) == 0
+        if (! $force_search_input && Arr::get($this->config, 'parsed_request.count', 0) == 0
             && $this->getConfig('paginator.total', 0) <= $this->getConfig('paginator.per_page', 0)) {
             return $tbody;
         }
@@ -374,7 +373,7 @@ class Search
             $no_empty_check = true;
         }
 
-        if (!$no_empty_check && Arr::get($this->config, 'paginator.total', 0) === 0) {
+        if (! $no_empty_check && Arr::get($this->config, 'paginator.total', 0) === 0) {
             $empty = $this->search_empty->prepare(['ignore_tags' => 'tbody']);
 
             return request::ajax() ? array_merge($info, $empty) : $info.$empty;
@@ -728,7 +727,7 @@ class Search
             $query_builder = $query->getQuery();
 
             // Builder doesn't have columns, move one level up.
-            if (!property_exists($query_builder, 'columns')) {
+            if (! property_exists($query_builder, 'columns')) {
                 $query_builder = $query_builder->getQuery();
             }
 
