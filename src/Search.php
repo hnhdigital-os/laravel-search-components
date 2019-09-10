@@ -20,13 +20,6 @@ class Search
     private $config;
 
     /**
-     * Request.
-     *
-     * @var array
-     */
-    private $request = [];
-
-    /**
      * Construct.
      */
     public function __construct($config = [])
