@@ -26,6 +26,8 @@ class Search
     {
         $this->config = $config;
 
+        $this->config['request'] = [];
+
         return $this;
     }
 
@@ -342,7 +344,12 @@ class Search
         $td_html = '';
 
         // Default.
-        $td_html = Html::input()->name('lookup')->placeholder(Arr::get($search_input, 'placeholder', ''))->value(Arr::get($this->config, 'request.lookup', ''))->addClass('search-field form-control')->form($this->form_id)->s();
+        $td_html = Html::input()
+            ->name('lookup')
+            ->placeholder(Arr::get($search_input, 'placeholder', ''))
+            ->value(Arr::get($this->config, 'request.lookup', ''))
+            ->addClass('search-field form-control '.Arr::get($search_input, 'class', ''))
+            ->form($this->form_id)->s();
 
         $tr->td(
             ['colspan' => $total_columns],
