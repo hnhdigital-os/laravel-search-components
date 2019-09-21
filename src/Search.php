@@ -475,6 +475,17 @@ class Search
     }
 
     /**
+     * Get a secific entry in the result response.
+     *
+     * @param string $key
+     * @param mixed  $value
+     */
+    public function getReponse($key, $default = null)
+    {
+        return Arr::get($this->result_response, $key, $default);
+    }
+
+    /**
      * Get the unique session name.
      *
      * @return string
