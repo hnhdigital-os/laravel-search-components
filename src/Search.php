@@ -625,6 +625,33 @@ class Search
     }
 
     /**
+     * Inject the request inputs variables into the search request.
+     *
+     * @param string|array $name
+     *
+     * @return void
+     */
+    public function addRequest(...$names)
+    {
+        $request = $this->config['request'];
+
+        // If names provided as an array.
+        if (is_array($names[0])) {
+            $names = $names[0];
+        }
+
+        foreach ($names as $name) {
+            if (request()->has($name)) {
+                $request[$name] = request()->input($name);
+            }
+        }
+
+        $this->session = $this->config['request'] = $request;
+
+        return $this;
+    }
+
+    /**
      * Set session.
      *
      * @return void
