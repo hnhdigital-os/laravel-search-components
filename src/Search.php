@@ -2,13 +2,13 @@
 
 namespace HnhDigital\SearchComponents;
 
+use HnhDigital\ModelSearch\ModelSearch;
+use Html;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Arr;
+use Request;
 use Str;
 use Tag;
-use Html;
-use Request;
-use Illuminate\Support\Arr;
-use Illuminate\Pagination\Paginator;
-use HnhDigital\ModelSearch\ModelSearch;
 
 class Search
 {
