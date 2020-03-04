@@ -2,8 +2,8 @@
 
 namespace HnhDigital\SearchComponents\Composers;
 
-use Illuminate\Contracts\View\View;
 use HnhDigital\SearchComponents\Search as SearchClass;
+use Illuminate\Contracts\View\View;
 
 class Search
 {
