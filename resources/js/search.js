@@ -16,6 +16,7 @@ $.searchComponentsSearch = {
       var results = $('.'+$(this).attr('id').replace(new RegExp('-form$'), '-results'));
       var page = $(form).find('[name=page]').val();
       var results_mode = $(form).find('[name=results_mode]').val();
+      var row_id = $(form).find('[name=row_id]').val();
 
       // Abort an existing request.
       if (typeof form.data('xhr') != 'undefined') {
@@ -38,6 +39,7 @@ $.searchComponentsSearch = {
       }
       action_url += 'page=' + page;
       action_url += '&results_mode=' + results_mode;
+      action_url += '&row_id=' + row_id;
 
       $.each(form.data('paramaters'), function(key, value) {
         action_url += '&'+key+'=' + value;
@@ -72,6 +74,12 @@ $.searchComponentsSearch = {
     if (!results.hasClass('hnhdigital-search-results')) {
       var form_id = results.attr('id').replace(new RegExp('-form$'), '-results');
       results = $('.'+form_id);
+    }
+
+    if (typeof response.row != 'undefined') {
+      results.find('[data-id=' + response.id + ']').replaceWith(response.row);
+
+      return;
     }
 
     results.find('.search-header').html($H.build(response.header));
@@ -225,6 +233,23 @@ $(function() {
 
       $(form).find('[name=page]').val(1);
       $(form).find('[name=results_mode]').val('rows');
+  });
+
+  $('.hnhdigital-search-results .search-result-rows').on('reload', 'tr', function(e) {
+    if (typeof $(this).data('id') === 'undefined') {
+      return;
+    }
+
+    var results = $(this).closest('.hnhdigital-search-results');
+    var form = $('.'+results.attr('id').replace(new RegExp('-results$'), '-form'));
+
+    $(form).find('[name=results_mode]').val('row');
+    $(form).find('[name=row_id]').val($(this).data('id'));
+    form.trigger('submit');
+
+    $(form).find('[name=page]').val(1);
+    $(form).find('[name=row_id]').val('');
+    $(form).find('[name=results_mode]').val('rows');
   });
 
   /**

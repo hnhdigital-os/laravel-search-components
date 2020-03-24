@@ -3,12 +3,11 @@
 namespace HnhDigital\SearchComponents;
 
 use HnhDigital\ModelSearch\ModelSearch;
-use Html;
+use HnhDigital\LaravelHtmlGenerator\Html;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Arr;
-use Request;
-use Str;
-use Tag;
+use Illuminate\Support\Str;
+use HnhDigital\LaravelHtmlBuilder\Tag;
 
 class Search
 {
@@ -277,7 +276,7 @@ class Search
 
         $notices = $this->config['notices']->prepare(['ignore_tags' => 'tbody']);
 
-        return request::ajax() ? $notices : $notices;
+        return request()->ajax() ? $notices : $notices;
     }
 
     /**
@@ -376,12 +375,12 @@ class Search
         if (! $no_empty_check && Arr::get($this->config, 'paginator.total', 0) === 0) {
             $empty = $this->search_empty->prepare(['ignore_tags' => 'tbody']);
 
-            return request::ajax() ? array_merge($info, $empty) : $info.$empty;
+            return request()->ajax() ? array_merge($info, $empty) : $info.$empty;
         }
 
         $results = $this->config['result']->prepare(['ignore_tags' => 'tbody']);
 
-        return request::ajax() ? array_merge($info, $results) : $info.$results;
+        return request()->ajax() ? array_merge($info, $results) : $info.$results;
     }
 
     /**
@@ -863,12 +862,22 @@ class Search
         $this->result = $html;
         $this->result_response = $response;
 
-        if (request::ajax()) {
+        if (request()->ajax()) {
             $rows_name = request()->results_mode ?? 'rows';
+
             if ($this->getConfig('append')) {
                 $rows_name = 'append';
             } elseif ($this->getConfig('prepend')) {
                 $rows_name = 'prepend';
+            } elseif ($this->getConfig('row')) {
+                $rows_name = 'row';
+            }
+
+            if ($rows_name === 'row') {
+                return [
+                    'id'  => request()->row_id,
+                    'row' => optional(Arr::get($html->getChildNodes(), 0, null))->getHtml() ?? ''
+                ];
             }
 
             $result = [

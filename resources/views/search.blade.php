@@ -31,6 +31,7 @@
 <form id="{{ $search->form_id }}" class="hnhdigital-{{ $search->name }}-form hnhdigital-search-form" novalidate="novalidate" action="{{ $search->fallback_route }}"  data-action="{{ $search->route }}" method="post" onsubmit="return false;">
   <input type="hidden" name="page" value="{{ $search->getPaginator('page') }}">
   <input type="hidden" name="results_mode" value="rows">
+  <input type="hidden" name="row_id" value="">
   <button type="submit" class="hidden-search-button"></button>
 </form>
 
