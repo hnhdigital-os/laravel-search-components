@@ -78,6 +78,7 @@ $.searchComponentsSearch = {
 
     if (typeof response.row != 'undefined') {
       results.find('[data-id=' + response.id + ']').replaceWith(response.row);
+      results.find('[data-id=' + response.id + ']').trigger('hnhdigital-search::after-reload');
 
       return;
     }
@@ -220,25 +221,27 @@ $(function() {
    * Click action for Loading next page of results.
    */
   $('.hnhdigital-search-results').on('click', '.action-load-next-page', function() {
-      if ($(this).data('loading-next-page')) {
-        return;
-      }
+    if ($(this).data('loading-next-page')) {
+      return;
+    }
 
-      $(this).data('loading-next-page', true)
-      var results = $(this).closest('.hnhdigital-search-results');
-      var form = $('.'+results.attr('id').replace(new RegExp('-results$'), '-form'));
-      $(form).find('[name=page]').val($(this).data('page'));
-      $(form).find('[name=results_mode]').val('append');
-      form.trigger('submit');
+    $(this).data('loading-next-page', true)
+    var results = $(this).closest('.hnhdigital-search-results');
+    var form = $('.'+results.attr('id').replace(new RegExp('-results$'), '-form'));
+    $(form).find('[name=page]').val($(this).data('page'));
+    $(form).find('[name=results_mode]').val('append');
+    form.trigger('submit');
 
-      $(form).find('[name=page]').val(1);
-      $(form).find('[name=results_mode]').val('rows');
+    $(form).find('[name=page]').val(1);
+    $(form).find('[name=results_mode]').val('rows');
   });
 
   $('.hnhdigital-search-results .search-result-rows').on('reload', 'tr', function(e) {
     if (typeof $(this).data('id') === 'undefined') {
       return;
     }
+
+    $(this).trigger('hnhdigital-search::before-reload');
 
     var results = $(this).closest('.hnhdigital-search-results');
     var form = $('.'+results.attr('id').replace(new RegExp('-results$'), '-form'));
