@@ -609,6 +609,8 @@ class Search
             $request = $this->session;
         }
 
+        $request = Arr::wrap($request);
+
         foreach ($request as $key => $value) {
             if ($value === 'CLEAR') {
                 unset($request[$key]);
