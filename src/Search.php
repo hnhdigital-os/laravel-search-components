@@ -609,6 +609,10 @@ class Search
             $request = $this->session;
         }
 
+        if (request()->has('reset_request') && request()->reset_request) {
+            $request = [];
+        }
+
         $request = Arr::wrap($request);
 
         foreach ($request as $key => $value) {
