@@ -77,6 +77,7 @@ $.searchComponentsSearch = {
     }
 
     if (typeof response.row != 'undefined') {
+      results.find('[data-id=' + response.id + ']:not(:first)').remove();
       results.find('[data-id=' + response.id + ']').replaceWith(response.row);
       results.find('[data-id=' + response.id + ']').trigger('hnhdigital-search::after-reload');
 

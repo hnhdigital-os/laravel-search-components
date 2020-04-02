@@ -874,9 +874,15 @@ class Search
             }
 
             if ($rows_name === 'row') {
+
+                $row_html = '';
+                foreach ($html->getChildNodes() as $row) {
+                    $row_html .= optional($row)->getHtml() ?? '';
+                }
+
                 return [
                     'id'  => request()->row_id,
-                    'row' => optional(Arr::get($html->getChildNodes(), 0, null))->getHtml() ?? ''
+                    'row' => $row_html,
                 ];
             }
 
