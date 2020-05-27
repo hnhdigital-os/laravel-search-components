@@ -19,7 +19,7 @@ $.searchComponentsSearch = {
       var row_id = $(form).find('[name=row_id]').val();
 
       // Abort an existing request.
-      if (typeof form.data('xhr') != 'undefined') {
+      if (typeof form.data('xhr') != 'undefined' && results_mode !== 'row') {
         form.data('xhr').abort();
         form.removeData('xhr');
       }
@@ -59,7 +59,9 @@ $.searchComponentsSearch = {
         }
       });
 
-      form.data('xhr', xhr);
+      if (results_mode !== 'row') {
+        form.data('xhr', xhr);
+      }
 
       return false;
     });
