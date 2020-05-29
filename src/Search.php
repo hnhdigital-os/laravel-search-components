@@ -2,12 +2,12 @@
 
 namespace HnhDigital\SearchComponents;
 
-use HnhDigital\ModelSearch\ModelSearch;
+use HnhDigital\LaravelHtmlBuilder\Tag;
 use HnhDigital\LaravelHtmlGenerator\Html;
+use HnhDigital\ModelSearch\ModelSearch;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use HnhDigital\LaravelHtmlBuilder\Tag;
 
 class Search
 {
@@ -880,7 +880,6 @@ class Search
             }
 
             if ($rows_name === 'row') {
-
                 $row_html = '';
                 foreach ($html->getChildNodes() as $row) {
                     $row_html .= optional($row)->getHtml() ?? '';
