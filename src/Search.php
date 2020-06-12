@@ -309,7 +309,7 @@ class Search
             $td_html
         );
 
-        return $tbody;
+        return $tbody->prepare(['ignore_tags' => 'tbody']);
     }
 
     /**
@@ -365,8 +365,6 @@ class Search
      */
     private function getResult()
     {
-        $info = $this->search_info->prepare(['ignore_tags' => 'tbody']);
-
         $no_empty_check = false;
         if ($this->getConfig('append') || $this->getConfig('prepend') || $this->getConfig('no_empty_check')) {
             $no_empty_check = true;
@@ -375,12 +373,10 @@ class Search
         if (! $no_empty_check && Arr::get($this->config, 'paginator.total', 0) === 0) {
             $empty = $this->search_empty->prepare(['ignore_tags' => 'tbody']);
 
-            return request()->ajax() ? array_merge($info, $empty) : $info.$empty;
+            return $empty;
         }
 
-        $results = $this->config['result']->prepare(['ignore_tags' => 'tbody']);
-
-        return request()->ajax() ? array_merge($info, $results) : $info.$results;
+        return $this->config['result']->prepare(['ignore_tags' => 'tbody']);
     }
 
     /**
@@ -400,7 +396,7 @@ class Search
 
             $tr = $tbody->tr();
             $tr->td(
-                ['colspan' => $total_columns, 'style' => 'line-height: 50px;text-align:center;'],
+                ['colspan' => $total_columns, 'class' => 'text-left p-2 leading-10'],
                 Html::span($row_html)->s()
             );
         }
@@ -888,6 +884,7 @@ class Search
                 return [
                     'id'  => request()->row_id,
                     'row' => $row_html,
+                    'info' => $this->search_info,
                 ];
             }
 
@@ -896,6 +893,7 @@ class Search
                 'request'   => $this->request(),
                 'columns'   => (string) $this->columns,
                 'header'    => $this->search_header,
+                'info'      => $this->search_info,
                 'notices'   => $this->notices,
                 $rows_name  => $this->result,
                 'footer'    => $this->search_footer,

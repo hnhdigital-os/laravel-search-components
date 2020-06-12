@@ -83,11 +83,14 @@ $.searchComponentsSearch = {
       results.find('[data-id=' + response.id + ']').replaceWith(response.row);
       results.find('[data-id=' + response.id + ']').trigger('hnhdigital-search::after-reload');
 
+      results.find('.search-info-rows').html($H.build(response.info));
+
       return;
     }
 
     results.find('.search-header').html($H.build(response.header));
     results.find('.search-notices').html($H.build(response.notices));
+    results.find('.search-info-rows').html($H.build(response.info));
     results.find('.search-footer').html($H.build(response.footer));
 
     var tbody_rows = results.find('.search-result-rows');

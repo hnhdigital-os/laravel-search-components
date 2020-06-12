@@ -4,7 +4,7 @@
      {{ $slot ?? '' }}
 
      <div class="table-responsive">
-        <table class="table {{ $search->table_class ?? '' }}">
+        <table class="table {{ $search->table_class ?? '' }}" {!! $search->table_attributes ?? '' !!}>
           {!! $search->columns !!}
           <thead class="search-header">
             {!! $search->search_header !!}
@@ -12,6 +12,9 @@
           {!! $search->search_input !!}
           <tbody class="search-notices">
             {!! $search->notices !!}
+          </tbody>
+          <tbody class="search-info-rows">
+            {!! $search->search_info !!}
           </tbody>
           <tbody class="search-result-rows">
             {!! $search->result !!}
