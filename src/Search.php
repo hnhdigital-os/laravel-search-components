@@ -391,13 +391,13 @@ class Search
 
         if ($this->getConfig('paginator.has_more_pages')) {
             $row_html = Html::a('Click to load more results.')->scriptLink()
-                ->addClass('action-load-next-page f-w-100')
+                ->addClass('action-load-next-page font-thin')
                 ->data('page', $this->getConfig('paginator.page') + 1);
 
             $tr = $tbody->tr();
             $tr->td(
                 ['colspan' => $total_columns, 'class' => 'text-left p-2 leading-10'],
-                Html::span($row_html)->s()
+                Html::div($row_html)->s()
             );
         }
 
