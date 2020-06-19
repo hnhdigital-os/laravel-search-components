@@ -475,7 +475,7 @@ class Search
      * @param string $key
      * @param mixed  $value
      */
-    public function getReponse($key, $default = null)
+    public function getResponse($key, $default = null)
     {
         return Arr::get($this->result_response, $key, $default);
     }
