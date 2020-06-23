@@ -487,16 +487,38 @@ class Search
      */
     private function getSessionName()
     {
-        // Use the unique route as the session name.
-        if (Arr::has($this->config, 'route_text')) {
-            $name = str_replace(['[', ']', '::', ' '], ['', '-', '-', ''], Arr::get($this->config, 'route_text', ''));
+        return self::generateSessionName(
+            $this->name,
+            Arr::has($this->config, 'class'),
+            Arr::has($this->config, 'route_text'),
+            Arr::get($this->config, 'route_parameters', [])
+        );
+    }
 
-            $route_parameters = Arr::get($this->config, 'route_parameters', []);
+    /**
+     * Get the unique session name.
+     *
+     * @param string $name
+     * @param class $class
+     * @param string $route_text
+     * @param array $route_parameters
+     *
+     * @return string
+     */
+    public static function generateSessionName($name, $class, $route_text = '', $route_parameters = [])
+    {
+        // Use the unique route as the session name.
+        if (! empty($route_text)) {
+            $name = str_replace(['[', ']', '::', ' '], ['', '-', '-', ''], $route_text);
+
+            $route_parameters = Arr::wrap($route_parameters);
 
             foreach ($route_parameters as $key => &$value) {
                 if ($value instanceof \Illuminate\Database\Eloquent\Model) {
                     $value = $value->getKey();
                 }
+
+                unset($value);
             }
 
             $name .= '-'.hash('sha256', serialize($route_parameters));
@@ -504,13 +526,9 @@ class Search
             return $name;
         }
 
-        $name = $this->name;
-
         // Use the provided class and search name.
-        if (Arr::has($this->config, 'class')) {
-            if (Arr::get($this->config, 'class', false)) {
-                $name .= '_'.Str::snake(str_replace('\\', '', $this->config['class']));
-            }
+        if (! empty($class)) {
+            $name .= '_'.Str::snake(str_replace('\\', '', $class));
 
             return $name;
         }
@@ -716,6 +734,17 @@ class Search
     private function setFallbackRoute(...$arguments)
     {
         $this->config['fallback_route'] = route(...$arguments);
+    }
+
+    /**
+     * Adjust the count.
+     *
+     * @return void
+     */
+    public function changeCount($count = 1)
+    {
+        Arr::set($this->config, 'paginator.count', $count + Arr::get($this->config, 'paginator.count', 0));
+        Arr::set($this->config, 'paginator.total', $count + Arr::get($this->config, 'paginator.total', 0));
     }
 
     /**
