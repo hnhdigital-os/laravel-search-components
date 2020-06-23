@@ -489,8 +489,8 @@ class Search
     {
         return self::generateSessionName(
             $this->name,
-            Arr::has($this->config, 'class'),
-            Arr::has($this->config, 'route_text'),
+            Arr::get($this->config, 'class', ''),
+            Arr::get($this->config, 'route_text', ''),
             Arr::get($this->config, 'route_parameters', [])
         );
     }
@@ -505,7 +505,7 @@ class Search
      *
      * @return string
      */
-    public static function generateSessionName($name, $class, $route_text = '', $route_parameters = [])
+    public static function generateSessionName($name, $class = '', $route_text = '', $route_parameters = [])
     {
         // Use the unique route as the session name.
         if (! empty($route_text)) {
