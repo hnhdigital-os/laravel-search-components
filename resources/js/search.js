@@ -232,6 +232,8 @@ $(function() {
     }
 
     $(this).data('loading-next-page', true)
+      .html((typeof $.icon !== 'undefined' ? $.icon('s circle-notch fa-spin') : '') + ' Loading...');
+
     var results = $(this).closest('.hnhdigital-search-results');
     var form = $('.'+results.attr('id').replace(new RegExp('-results$'), '-form'));
     $(form).find('[name=page]').val($(this).data('page'));
