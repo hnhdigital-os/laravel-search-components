@@ -350,10 +350,10 @@ class Search
             ->addClass('search-field form-control '.Arr::get($search_input, 'class', ''))
             ->form($this->form_id)->s();
 
-        $render_search_closure = Arr::get($search_input, 'render_search', false);
+        $render_input_closure = Arr::get($search_input, 'render_input', false);
 
-        if ($render_search_closure !== false && is_callable($render_search_closure)) {
-            $render_search_closure($td_html, $this);
+        if ($render_input_closure !== false && is_callable($render_input_closure)) {
+            $render_input_closure($td_html, $this);
         }
 
         $tr->td(
