@@ -350,10 +350,22 @@ class Search
             ->addClass('search-field form-control '.Arr::get($search_input, 'class', ''))
             ->form($this->form_id)->s();
 
+        $render_search_closure = Arr::get($search_input, 'render_search', false);
+
+        if ($render_search_closure !== false && is_callable($render_search_closure)) {
+            $render_search_closure($td_html, $this);
+        }
+
         $tr->td(
-            ['colspan' => $total_columns],
+            ['colspan' => Arr::get($search_input, 'search_input_colspan', $total_columns)],
             $td_html
         );
+
+        $render_columns_closure = Arr::get($search_input, 'render_columns', false);
+
+        if ($render_columns_closure !== false && is_callable($render_columns_closure)) {
+            $render_columns_closure($tr, $this);
+        }
 
         return $tbody;
     }
