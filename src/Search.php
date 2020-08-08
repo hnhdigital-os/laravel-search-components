@@ -297,11 +297,23 @@ class Search
 
         $this->parseRequest();
 
-        if (Arr::get($this->config, 'parsed_request.count', 0) == 0) {
-            return $tbody;
+        $td_html = 'Filtering by: ';
+
+        $count_filters = Arr::get($this->config, 'parsed_request.count', 0);
+
+        if ($count_filters > 0) {
+            $td_html .= implode('; ', Arr::get($this->config, 'parsed_request.text', []));
         }
 
-        $td_html = 'Filtering by: '.implode('; ', Arr::get($this->config, 'parsed_request.text', [])).'. ';
+        $additional_info_closure = Arr::get($search_info, 'additional_info', false);
+
+        if ($additional_info_closure !== false && is_callable($additional_info_closure)) {
+            $count_filters += $additional_info_closure($td_html, $this);
+        }
+
+        if ($count_filters === 0) {
+            return $tbody;
+        }
 
         $tr = $tbody->tr(['class' => 'search-info']);
         $tr->td(
