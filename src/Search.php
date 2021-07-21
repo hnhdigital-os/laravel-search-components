@@ -74,6 +74,8 @@ class Search
                 foreach ($filters as $filter) {
                     [$operator_name, $operator, $value] = ModelSearch::parseInlineOperator($filter);
 
+                    $original_value = $value;
+
                     if (Arr::has($result['attributes'], $key.'.source_model', false)) {
                         $model = Arr::get($result['attributes'], $key.'.source_model', false);
                         $model_key = Arr::get($result['attributes'], $key.'.source_model_key', null);
@@ -86,6 +88,10 @@ class Search
                         }
 
                         $value = $this->parseModelName($model, $model_name, $value, $model_key);
+
+                        if (empty($value)) {
+                            $value = $original_value;
+                        }
                     }
 
                     $title = Arr::get($result['attributes'], $key.'.title', $key);
@@ -359,7 +365,7 @@ class Search
             ->name('lookup')
             ->placeholder(Arr::get($search_input, 'placeholder', ''))
             ->value(Arr::get($this->config, 'request.lookup', ''))
-            ->addClass('search-field form-control '.Arr::get($search_input, 'class', ''))
+            ->addClass('search-field form-control w-full '.Arr::get($search_input, 'class', ''))
             ->form($this->form_id)->s();
 
         $render_input_closure = Arr::get($search_input, 'render_input', false);
