@@ -10,11 +10,11 @@
         }
     ],
     "require": {
-        "php": "^7.2",
-        "laravel/framework": "^5.8|^6.0",
-        "hnhdigital-os/laravel-html-generator": "~1.0",
-        "hnhdigital-os/laravel-html-builder": "~1.0",
-        "hnhdigital-os/laravel-model-search": "~1.0"
+        "php": "^7.3",
+        "laravel/framework": "^6.0|^7.0|^8.0",
+        "hnhdigital-os/laravel-html-generator": "^2.0",
+        "hnhdigital-os/laravel-html-builder": "^2.0",
+        "hnhdigital-os/laravel-model-search": "^2.0"
     },
     "require-dev": {
 
