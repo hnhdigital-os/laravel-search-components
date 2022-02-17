@@ -134,15 +134,26 @@ $.searchComponentsSearch = {
     var search = {};
 
     results.find('.search-field').each(function() {
-        if ($(this).attr('type') == 'radio' || $(this).attr('type') == 'checkbox') {
-          if ($(this).prop('checked')) {
-            search[this.name] = $(this).val();
-          }
 
-          return;
+      if (this.name.includes('[]')) {
+        if (typeof search[this.name.replace('[]', '')] == 'undefined') {
+          search[this.name.replace('[]', '')] = [];
+        }
+        if ($(this).prop('checked')) {
+          search[this.name.replace('[]', '')].push($(this).val());
+        }
+        return;
+      }
+
+      if ($(this).attr('type') == 'radio' || $(this).attr('type') == 'checkbox') {
+        if ($(this).prop('checked')) {
+          search[this.name] = $(this).val();
         }
 
-        search[this.name] = $(this).val();
+        return;
+      }
+
+      search[this.name] = $(this).val();
     });
 
     // Trigger on form.
