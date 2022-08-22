@@ -8,7 +8,19 @@ use HnhDigital\ModelSearch\ModelSearch;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use Illuminate\Support\Collection;
 
+/**
+ * @method static name(string $name)
+ * @method static class(string $class)
+ * @method static route(...$arguments)
+ * @method static request(...$arguments)
+ * @method static columns(array $config)
+ * @method static searchInfo(array|bool $config)
+ * @method static searchInput(array|bool $config)
+ * @method static searchEmpty(array|bool $config)
+ * @method static tableClass(string $class)
+ */
 class Search
 {
     /**
