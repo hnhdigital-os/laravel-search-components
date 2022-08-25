@@ -7,8 +7,8 @@ use HnhDigital\LaravelHtmlGenerator\Html;
 use HnhDigital\ModelSearch\ModelSearch;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 
 /**
  * @method static name(string $name)
@@ -124,9 +124,8 @@ class Search
     /**
      * Parse the model name with the given key.
      *
-     * @param string $model
-     * @param mixed  $value
-     *
+     * @param  string  $model
+     * @param  mixed  $value
      * @return mixed
      */
     private function parseModelName($model, $name, $value, $key = null)
@@ -490,8 +489,8 @@ class Search
     /**
      * Get a secific entry in the config.
      *
-     * @param string $key
-     * @param mixed  $value
+     * @param  string  $key
+     * @param  mixed  $value
      */
     public function getConfig($key, $default = null)
     {
@@ -501,8 +500,8 @@ class Search
     /**
      * Set a secific entry in the config.
      *
-     * @param string $key
-     * @param mixed  $value
+     * @param  string  $key
+     * @param  mixed  $value
      */
     public function setConfig($key, $value)
     {
@@ -514,8 +513,8 @@ class Search
     /**
      * Get a secific entry in the result response.
      *
-     * @param string $key
-     * @param mixed  $value
+     * @param  string  $key
+     * @param  mixed  $value
      */
     public function getResponse($key, $default = null)
     {
@@ -540,11 +539,10 @@ class Search
     /**
      * Get the unique session name.
      *
-     * @param string $name
-     * @param class $class
-     * @param string $route_text
-     * @param array $route_parameters
-     *
+     * @param  string  $name
+     * @param  class  $class
+     * @param  string  $route_text
+     * @param  array  $route_parameters
      * @return string
      */
     public static function generateSessionName($name, $class = '', $route_text = '', $route_parameters = [])
@@ -581,8 +579,7 @@ class Search
     /**
      * Set the search empty.
      *
-     * @param bool|array $config
-     *
+     * @param  bool|array  $config
      * @return void
      */
     private function setSearchEmpty($config = false)
@@ -611,8 +608,7 @@ class Search
     /**
      * Set the search input.
      *
-     * @param bool|array $config
-     *
+     * @param  bool|array  $config
      * @return void
      */
     private function setSearchInput($config = false)
@@ -651,8 +647,7 @@ class Search
     /**
      * Request.
      *
-     * @param string|array $name
-     *
+     * @param  string|array  $name
      * @return void
      */
     private function setRequest($name)
@@ -688,8 +683,7 @@ class Search
     /**
      * Inject the request inputs variables into the search request.
      *
-     * @param string|array $name
-     *
+     * @param  string|array  $name
      * @return void
      */
     public function addRequest(...$names)
@@ -792,8 +786,7 @@ class Search
     /**
      * Results from the paginator.
      *
-     * @param Paginator $results
-     *
+     * @param  Paginator  $results
      * @return void
      */
     private function setPaginator($results)
@@ -857,9 +850,8 @@ class Search
     /**
      * Get a static value.
      *
-     * @param string $method
-     * @param array  $arguments
-     *
+     * @param  string  $method
+     * @param  array  $arguments
      * @return mixed
      */
     public function __get($name)
@@ -870,9 +862,8 @@ class Search
     /**
      * Get a static value.
      *
-     * @param string $method
-     * @param array  $arguments
-     *
+     * @param  string  $method
+     * @param  array  $arguments
      * @return mixed
      */
     public function __set($name, $value)
@@ -883,9 +874,8 @@ class Search
     /**
      * Call a method.
      *
-     * @param string $method
-     * @param array  $arguments
-     *
+     * @param  string  $method
+     * @param  array  $arguments
      * @return mixed
      */
     public function __call($method, $arguments)
