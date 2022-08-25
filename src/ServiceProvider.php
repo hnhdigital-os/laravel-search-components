@@ -3,7 +3,6 @@
 namespace HnhDigital\SearchComponents;
 
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
-use View;
 
 class ServiceProvider extends BaseServiceProvider
 {
