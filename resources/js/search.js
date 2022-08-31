@@ -213,7 +213,13 @@ $(function() {
     $('.' + result_id + ' .search-field').each(function() {
       switch ($(this).prop('tagName')) {
         case 'SELECT':
-          $(this).prop('selectedIndex', 0).trigger('change');
+          if ($(this).prop('multiple') && $(this).hasClass('init-select2')) {
+            $(this).val('').trigger('change');
+          } else if ($(this).prop('multiple')) {
+            $(this).find('option:selected').removeProp('selected').trigger('change')
+          } else {
+            $(this).prop('selectedIndex', 0).trigger('change');
+          }
           break;
         default:
           if ($(this).attr('type') == 'radio' || $(this).attr('type') == 'checkbox') {
