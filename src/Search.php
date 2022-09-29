@@ -696,9 +696,13 @@ class Search
             $names = $names[0];
         }
 
-        foreach ($names as $name) {
-            if (request()->has($name)) {
-                $request[$name] = request()->input($name);
+        foreach ($names as $key) {
+            if (request()->has($key)) {
+                $request[$key] = request()->input($key);
+
+                if ($request[$key] === 'CLEAR') {
+                    unset($request[$key]);
+                }
             }
         }
 
