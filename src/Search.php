@@ -960,6 +960,7 @@ class Search
                 'columns'   => (string) $this->columns,
                 'header'    => $this->search_header,
                 'info'      => $this->search_info,
+                'paginator'   => $this->paginator,
                 'notices'   => $this->notices,
                 $rows_name  => $this->result,
                 'footer'    => $this->search_footer,
