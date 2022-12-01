@@ -6,8 +6,8 @@
      <div class="table-responsive">
         <table class="table {{ $search->table_class ?? '' }}" {!! $search->table_attributes ?? '' !!}>
           {!! $search->columns !!}
-          <thead class="search-header @if(($search->getConfig('paginator.count') ?? 0) === 0
-|| ($search->getConfig('paginator.total') ?? 0) === 0) hidden @endif ">
+          <thead class="seachr-header @if(($search->getConfig('paginator.count') ?? 0) === 0
+&& ($search->getConfig('paginator.total') ?? 0) === 0) hidden @endif ">
             {!! $search->search_header !!}
           </thead>
           {!! $search->search_input !!}
