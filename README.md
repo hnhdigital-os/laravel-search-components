@@ -33,7 +33,7 @@ This package has been developed by H&H|Digital, an Australian botique developer.
 
 Via composer:
 
-`$ composer require hnhdigital-os/laravel-search-components ~1.0`
+`$ composer require hnhdigital-os/laravel-search-components ~3.0`
 
 This package's service provider will autoload.
 
