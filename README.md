@@ -26,8 +26,8 @@ This package has been developed by H&H|Digital, an Australian botique developer.
 
 ## Requirements
 
-* PHP >= 7.2
-* Laravel >= 5.8
+* PHP >= 8.0
+* Laravel >= 9.0
 
 ## Installation
 
