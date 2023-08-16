@@ -13,6 +13,8 @@ Provides blade template and a search object to convert your model searches into 
 
 [![Latest Stable Version](https://poser.pugx.org/hnhdigital-os/laravel-search-components/v/stable.svg)](https://packagist.org/packages/hnhdigital-os/laravel-search-components) [![Total Downloads](https://poser.pugx.org/hnhdigital-os/laravel-search-components/downloads.svg)](https://packagist.org/packages/hnhdigital-os/laravel-search-components) [![Latest Unstable Version](https://poser.pugx.org/hnhdigital-os/laravel-search-components/v/unstable.svg)](https://packagist.org/packages/hnhdigital-os/laravel-search-components) [![Built for Laravel](https://img.shields.io/badge/Built_for-Laravel-green.svg)](https://laravel.com/) [![License](https://poser.pugx.org/hnhdigital-os/laravel-search-components/license.svg)](https://packagist.org/packages/hnhdigital-os/laravel-search-components)
 
+[![Build Status](https://travis-ci.org/hnhdigital-os/laravel-search-components.svg?branch=master)](https://travis-ci.org/hnhdigital-os/laravel-search-components) [![StyleCI](https://styleci.io/repos/116639586/shield?branch=master)](https://styleci.io/repos/116639586) [![Test Coverage](https://codeclimate.com/github/hnhdigital-os/laravel-search-components/badges/coverage.svg)](https://codeclimate.com/github/hnhdigital-os/laravel-search-components/coverage) [![Issue Count](https://codeclimate.com/github/hnhdigital-os/laravel-search-components/badges/issue_count.svg)](https://codeclimate.com/github/hnhdigital-os/laravel-search-components) [![Code Climate](https://codeclimate.com/github/hnhdigital-os/laravel-search-components/badges/gpa.svg)](https://codeclimate.com/github/hnhdigital-os/laravel-search-components)
+
 This package has been developed by H&H|Digital, an Australian botique developer. Visit us at [hnh.digital](http://hnh.digital).
 
 ## Documentation
@@ -26,14 +28,14 @@ This package has been developed by H&H|Digital, an Australian botique developer.
 
 ## Requirements
 
-* PHP >= 8.0
-* Laravel >= 9.0
+* PHP >= 7.2
+* Laravel >= 5.8
 
 ## Installation
 
 Via composer:
 
-`$ composer require hnhdigital-os/laravel-search-components ~3.0`
+`$ composer require hnhdigital-os/laravel-search-components ~1.0`
 
 This package's service provider will autoload.
 

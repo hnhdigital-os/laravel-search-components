@@ -541,7 +541,7 @@ class Search
      * Get the unique session name.
      *
      * @param  string  $name
-     * @param  class  $class
+     * @param  string  $class
      * @param  string  $route_text
      * @param  array  $route_parameters
      * @return string
